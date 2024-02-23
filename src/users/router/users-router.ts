@@ -3,7 +3,6 @@ import {HTTP_STATUSES} from "../../common/constants/http-statuses";
 import {blogsQueryRepository} from "../../blogs/blogs-query/blogs-query-repository";
 import {BlogCreateType, BlogViewType} from "../../common/types/blog-type";
 import {ObjectId} from "mongodb";
-import {blogsService} from "../../blogs/domain/blogs-service";
 import {
     usersEmailValidation,
     usersLoginValidation,
@@ -13,12 +12,9 @@ import {
 import {blogIdValidation, inputValidationMiddleware} from "../../validation/blogs-validation";
 import {UserCreateType, UserEmailEntityType, UserInputModelType, UserViewType} from "../types/user-types";
 import {usersService} from "../domain/users-service";
-import {usersRepositories} from "../repository/users-repository";
 import {usersQueryRepository} from "../query-repository/users-query-repository";
 import {authorizationMiddleware} from "../../validation/auth-validation";
-import {blogsRouter} from "../../blogs/router/blogs-router";
 import {getQueryData} from "../../common/custom-methods/query-data";
-import clearAllTimers = jest.clearAllTimers;
 
 export const usersValidators = [
     authorizationMiddleware,

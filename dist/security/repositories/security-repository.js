@@ -10,13 +10,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.securityRepositories = void 0;
-const db_1 = require("../../db");
 const jwt_service_1 = require("../../application/jwt-service");
+const db_1 = require("../../db");
 exports.securityRepositories = {
     createDevice(device) {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield db_1.devicesCollection.insertOne(device);
-            return response ? response.insertedId : false;
+            const response = yield db_1.DeviceModel.create(device);
+            return response ? response._id : false;
         });
     },
     deleteDevices(refreshToken) {
@@ -24,7 +24,7 @@ exports.securityRepositories = {
             let token = yield jwt_service_1.jwtService.getRefreshToken(refreshToken);
             let deviceId = token.deviceId;
             let userId = token.userId;
-            const response = yield db_1.devicesCollection.deleteMany({ $and: [{ deviceId: { $ne: deviceId } }, { userId: userId }] });
+            const response = yield db_1.DeviceModel.deleteMany({ $and: [{ deviceId: { $ne: deviceId } }, { userId: userId }] });
             return !!response.deletedCount;
         });
     },
@@ -33,13 +33,13 @@ exports.securityRepositories = {
             let token = yield jwt_service_1.jwtService.getRefreshToken(refreshToken);
             console.log(token, 'token');
             let deviceId = token.deviceId;
-            const response = yield db_1.devicesCollection.updateOne({ deviceId: deviceId }, { $set: { 'lastActiveDate': new Date(token.iat).toISOString() } });
+            const response = yield db_1.DeviceModel.updateOne({ deviceId: deviceId }, { 'lastActiveDate': new Date(token.iat).toISOString() });
             return !!response;
         });
     },
     deleteDeviceById(deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield db_1.devicesCollection.deleteOne({ deviceId: deviceId });
+            const response = yield db_1.DeviceModel.deleteOne({ deviceId: deviceId });
             return !!response.deletedCount;
         });
     }

@@ -1,18 +1,18 @@
-import {commentsCollection} from "../../db";
+import {CommentModel} from "../../db";
 import {ObjectId} from "mongodb";
 import {blogsSorting} from "../../blogs/blogs-query/utils/blogs-sorting";
 import {blogsPaginate} from "../../blogs/blogs-query/utils/blogs-paginate";
 
 export const commentQueryRepository = {
     async getCommentByCommentId() {
-        const comments = await commentsCollection.find({}).toArray()
+        const comments = await CommentModel.find({}).lean()
         return comments
     },
     async getCommentsByPostId(postId: string, sortBy?: string, sortDirection?: string, pageNumber?: number, pageSize?: number) {
         const sortQuery = blogsSorting.getSorting(sortBy, sortDirection)
         const {skip, limit, newPageNumber, newPageSize} = blogsPaginate.getPagination(pageNumber, pageSize)
-        const comments = await commentsCollection.find({postId: postId}).sort(sortQuery).skip(skip).limit(limit).toArray()
-        const allComments = await commentsCollection.find({postId: postId}).sort(sortQuery).toArray()
+        const comments = await CommentModel.find({postId: postId}).sort(sortQuery).skip(skip).limit(limit).lean()
+        const allComments = await CommentModel.find({postId: postId}).sort(sortQuery).lean()
 
         let pagesCount = Math.ceil(allComments.length / newPageSize)
         const fixArrayIds = comments.map((item => this.changeCommentFormat(item)))
@@ -27,7 +27,7 @@ export const commentQueryRepository = {
 
     },
     async getCommentById(commentId: ObjectId) {
-        const comment = await commentsCollection.findOne({_id: commentId})
+        const comment = await CommentModel.findOne({_id: commentId}).lean()
 
         return comment ? this.changeCommentFormat(comment) : false
     },

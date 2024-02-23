@@ -1,4 +1,4 @@
-import {tokensCollection, TokenModel, UserModel, RecoveryCodeModel} from "../../db";
+import {TokenModel, UserModel, RecoveryCodeModel} from "../../db";
 import {AuthType} from "../auth-types/auth-types";
 import {nodemailerService} from "../../application/nodemailer-service";
 import {v4 as uuidv4} from "uuid";

@@ -9,9 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.blogsRepositories = void 0;
+exports.BlogsRepositories = void 0;
 const db_1 = require("../../db");
-exports.blogsRepositories = {
+class BlogsRepositories {
     createBlog(blog) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -23,18 +23,19 @@ exports.blogsRepositories = {
                 return false;
             }
         });
-    },
+    }
     updateBlog(id, updateBlog) {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield db_1.BlogModel.updateOne({ _id: id }, updateBlog);
             return response.matchedCount === 1;
         });
-    },
+    }
     deleteBlog(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield db_1.BlogModel.deleteOne({ _id: id });
             return !!response.deletedCount;
         });
-    },
-};
+    }
+}
+exports.BlogsRepositories = BlogsRepositories;
 //# sourceMappingURL=blogs-repositories.js.map

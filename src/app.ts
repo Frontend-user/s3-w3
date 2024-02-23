@@ -3,12 +3,12 @@ import {runDb} from "./db";
 import {testRouter} from "./routes/test-router";
 import {blogsPostsBindRouter} from "./routes/blogs-posts-bindings-router";
 import {usersRouter} from "./users/router/users-router";
-import {blogsRouter} from "./blogs/router/blogs-router";
 import {postsRouter} from "./posts/router/posts-router";
 import {authRouter} from "./auth/auth-router/auth-router";
 import {commentsRouter} from "./comments/router/comments-router";
 import cookieParser from "cookie-parser";
 import {securityRouter} from "./security/router/security-router";
+import {blogsRouter} from "./blogs/router/blogs-router";
 export const app = express()
 const jsonBodyMiddleware = express.json()
 app.use(jsonBodyMiddleware)

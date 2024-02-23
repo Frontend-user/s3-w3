@@ -9,25 +9,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.blogsService = void 0;
-const blogs_repositories_1 = require("../repository/blogs-repositories");
-exports.blogsService = {
+exports.BlogsService = void 0;
+class BlogsService {
+    constructor(blogsRepositories) {
+        this.blogsRepositories = blogsRepositories;
+    }
     createBlog(blog) {
         return __awaiter(this, void 0, void 0, function* () {
             const newBlog = Object.assign(Object.assign({}, blog), { createdAt: new Date().toISOString(), isMembership: false });
-            const newBlogId = yield blogs_repositories_1.blogsRepositories.createBlog(newBlog);
+            const newBlogId = yield this.blogsRepositories.createBlog(newBlog);
             return newBlogId ? newBlogId : false;
         });
-    },
+    }
     updateBlog(id, updateBlog) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield blogs_repositories_1.blogsRepositories.updateBlog(id, updateBlog);
+            return yield this.blogsRepositories.updateBlog(id, updateBlog);
         });
-    },
+    }
     deleteBlog(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield blogs_repositories_1.blogsRepositories.deleteBlog(id);
+            return yield this.blogsRepositories.deleteBlog(id);
         });
-    },
-};
+    }
+}
+exports.BlogsService = BlogsService;
 //# sourceMappingURL=blogs-service.js.map

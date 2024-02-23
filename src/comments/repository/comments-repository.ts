@@ -1,22 +1,22 @@
 import {CommentCreateType} from "../types/comment-type";
-import {commentsCollection} from "../../db";
+import {CommentModel } from "../../db";
 import {ObjectId} from "mongodb";
 
 export const commentsRepository = {
     async createComment(comment: CommentCreateType): Promise<false | ObjectId> {
-        let response = await commentsCollection.insertOne(comment);
-        return response ? response.insertedId : false
+        let response = await CommentModel.create(comment);
+        return response ? response._id : false
     },
 
     async updateComment(id: ObjectId, updateComment: {
         content: string
     }): Promise<boolean> {
-        const response = await commentsCollection.updateOne({_id: id}, {$set: updateComment})
+        const response = await CommentModel.updateOne({_id: id},  updateComment)
         return response.matchedCount === 1;
     },
 
     async deleteCommentById(commentId: ObjectId) {
-        const comment = await commentsCollection.deleteOne({_id: commentId})
+        const comment = await CommentModel.deleteOne({_id: commentId})
         return !!comment
     },
 

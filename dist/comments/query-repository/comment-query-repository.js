@@ -16,7 +16,7 @@ const blogs_paginate_1 = require("../../blogs/blogs-query/utils/blogs-paginate")
 exports.commentQueryRepository = {
     getCommentByCommentId() {
         return __awaiter(this, void 0, void 0, function* () {
-            const comments = yield db_1.commentsCollection.find({}).toArray();
+            const comments = yield db_1.CommentModel.find({}).lean();
             return comments;
         });
     },
@@ -24,8 +24,8 @@ exports.commentQueryRepository = {
         return __awaiter(this, void 0, void 0, function* () {
             const sortQuery = blogs_sorting_1.blogsSorting.getSorting(sortBy, sortDirection);
             const { skip, limit, newPageNumber, newPageSize } = blogs_paginate_1.blogsPaginate.getPagination(pageNumber, pageSize);
-            const comments = yield db_1.commentsCollection.find({ postId: postId }).sort(sortQuery).skip(skip).limit(limit).toArray();
-            const allComments = yield db_1.commentsCollection.find({ postId: postId }).sort(sortQuery).toArray();
+            const comments = yield db_1.CommentModel.find({ postId: postId }).sort(sortQuery).skip(skip).limit(limit).lean();
+            const allComments = yield db_1.CommentModel.find({ postId: postId }).sort(sortQuery).lean();
             let pagesCount = Math.ceil(allComments.length / newPageSize);
             const fixArrayIds = comments.map((item => this.changeCommentFormat(item)));
             return {
@@ -39,7 +39,7 @@ exports.commentQueryRepository = {
     },
     getCommentById(commentId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const comment = yield db_1.commentsCollection.findOne({ _id: commentId });
+            const comment = yield db_1.CommentModel.findOne({ _id: commentId }).lean();
             return comment ? this.changeCommentFormat(comment) : false;
         });
     },

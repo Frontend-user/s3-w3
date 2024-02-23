@@ -1,29 +1,29 @@
-import {devicesCollection} from "../../db";
 import {jwtService} from "../../application/jwt-service";
+import {DeviceModel} from "../../db";
 
 export const securityRepositories = {
 
     async createDevice(device: any) {
-        const response = await devicesCollection.insertOne(device)
-        return response ? response.insertedId : false
+        const response = await DeviceModel.create(device)
+        return response ? response._id : false
     },
     async deleteDevices(refreshToken: string) {
         let token = await jwtService.getRefreshToken(refreshToken)
         let deviceId = token.deviceId
         let userId = token.userId
 
-        const response = await devicesCollection.deleteMany({$and: [{deviceId: {$ne: deviceId}}, {userId: userId}]})
+        const response = await DeviceModel.deleteMany({$and: [{deviceId: {$ne: deviceId}}, {userId: userId}]})
         return !!response.deletedCount
     },
     async updateDevice(refreshToken: string) {
         let token = await jwtService.getRefreshToken(refreshToken)
         console.log(token, 'token')
         let deviceId = token.deviceId
-        const response = await devicesCollection.updateOne({deviceId: deviceId}, {$set: {'lastActiveDate':  new Date(token.iat).toISOString()}})
+        const response = await DeviceModel.updateOne({deviceId: deviceId}, {'lastActiveDate':  new Date(token.iat).toISOString()})
         return !!response
     },
     async deleteDeviceById(deviceId: string) {
-        const response = await devicesCollection.deleteOne({deviceId: deviceId})
+        const response = await DeviceModel.deleteOne({deviceId: deviceId})
         return !!response.deletedCount
     }
 }
