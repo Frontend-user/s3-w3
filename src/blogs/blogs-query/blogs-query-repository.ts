@@ -1,5 +1,5 @@
 import {BlogModel} from "../../db";
-import {ObjectId, SortDirection} from "mongodb";
+import {ObjectId } from "mongodb";
 import {BlogEntityType, BlogViewType} from "../../common/types/blog-type";
 import {blogsSorting} from "./utils/blogs-sorting";
 import {blogsFinding} from "./utils/blogs-finding";
@@ -7,9 +7,7 @@ import {blogsPaginate} from "./utils/blogs-paginate";
 import {Pagination} from "../../common/types/pagination";
 import {changeIdFormat} from "../../common/custom-methods/change-id-format";
 
-
-export const blogsQueryRepository = {
-
+export class BlogsQueryRepository {
     async getBlogs(searchNameTerm?: string, sortBy?: string, sortDirection?: string, pageNumber?: number, pageSize?: number) {
         const findQuery = blogsFinding.getFindings(searchNameTerm)
         const sortQuery = blogsSorting.getSorting(sortBy, sortDirection)
@@ -29,11 +27,10 @@ export const blogsQueryRepository = {
         }
 
         return response
-    },
+    }
 
     async getBlogById(id: string): Promise<BlogViewType | false> {
         const blog: BlogEntityType | null = await BlogModel.findOne({_id: new ObjectId(id)}).lean()
         return blog ? changeIdFormat(blog) : false
-    },
-
+    }
 }

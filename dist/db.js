@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.runDb = exports.RecoveryCodeModel = exports.CommentModel = exports.PostModel = exports.BlogModel = exports.TokenModel = exports.DeviceModel = exports.UserModel = exports.devicesCollection = exports.tokensCollection = exports.commentsCollection = exports.usersCollection = exports.postsCollection = exports.blogsCollection = exports.client = void 0;
+exports.runDb = exports.RecoveryCodeModel = exports.CommentModel = exports.PostModel = exports.BlogModel = exports.TokenModel = exports.DeviceModel = exports.UserModel = exports.client = void 0;
 const mongodb_1 = require("mongodb");
 const dotenv_1 = __importDefault(require("dotenv"));
 const mongoose_1 = __importDefault(require("mongoose"));
@@ -24,12 +24,6 @@ if (!url) {
 }
 console.log('url', url);
 exports.client = new mongodb_1.MongoClient(url);
-exports.blogsCollection = exports.client.db('db').collection('blogs');
-exports.postsCollection = exports.client.db('db').collection('posts');
-exports.usersCollection = exports.client.db('db').collection('users');
-exports.commentsCollection = exports.client.db('db').collection('comments');
-exports.tokensCollection = exports.client.db('db').collection('tokens');
-exports.devicesCollection = exports.client.db('db').collection('devices');
 exports.UserModel = mongoose_1.default.model('users', schemas_1.userSchema);
 exports.DeviceModel = mongoose_1.default.model('devices', schemas_1.deviceSchema);
 exports.TokenModel = mongoose_1.default.model('tokens', schemas_1.tokenSchema);

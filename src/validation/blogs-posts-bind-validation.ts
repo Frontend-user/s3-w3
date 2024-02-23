@@ -1,14 +1,9 @@
-import {body, param, validationResult} from "express-validator";
+import { param, validationResult} from "express-validator";
 import {BlogViewType} from "../common/types/blog-type";
-import {ObjectId} from "mongodb";
 import {NextFunction, Request, Response} from "express";
 import {ErrorType} from "../common/types/error-type";
-import {blogsQueryRepository} from "../blogs/blogs-query/blogs-query-repository";
+import {blogsQueryRepository} from "../common/composition-root/composition-root";
 
-export const postBlogsBindingBlogIdValidation = param('id').trim().isLength({min: 1, max: 300}).withMessage({
-    message: 'id is wrong',
-    field: 'id'
-})
 
 export const postBlogBindIdExistValidation = param('blogId').custom(async (value, {req}) => {
     const isExistBlogId: BlogViewType | boolean = await blogsQueryRepository.getBlogById(value)

@@ -10,13 +10,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BlogsService = void 0;
+const blogs_classes_1 = require("../blogs-classes");
 class BlogsService {
     constructor(blogsRepositories) {
         this.blogsRepositories = blogsRepositories;
     }
     createBlog(blog) {
         return __awaiter(this, void 0, void 0, function* () {
-            const newBlog = Object.assign(Object.assign({}, blog), { createdAt: new Date().toISOString(), isMembership: false });
+            let newBlog = new blogs_classes_1.BlogClass(blog.name, blog.description, blog.websiteUrl);
             const newBlogId = yield this.blogsRepositories.createBlog(newBlog);
             return newBlogId ? newBlogId : false;
         });

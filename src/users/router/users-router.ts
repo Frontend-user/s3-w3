@@ -1,7 +1,5 @@
 import {Request, Response, Router} from "express";
 import {HTTP_STATUSES} from "../../common/constants/http-statuses";
-import {blogsQueryRepository} from "../../blogs/blogs-query/blogs-query-repository";
-import {BlogCreateType, BlogViewType} from "../../common/types/blog-type";
 import {ObjectId} from "mongodb";
 import {
     usersEmailValidation,

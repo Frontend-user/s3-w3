@@ -9,15 +9,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.blogsPostsBindingInputValidationMiddleware = exports.postBlogBindIdExistValidation = exports.postBlogsBindingBlogIdValidation = void 0;
+exports.blogsPostsBindingInputValidationMiddleware = exports.postBlogBindIdExistValidation = void 0;
 const express_validator_1 = require("express-validator");
-const blogs_query_repository_1 = require("../blogs/blogs-query/blogs-query-repository");
-exports.postBlogsBindingBlogIdValidation = (0, express_validator_1.param)('id').trim().isLength({ min: 1, max: 300 }).withMessage({
-    message: 'id is wrong',
-    field: 'id'
-});
+const composition_root_1 = require("../common/composition-root/composition-root");
 exports.postBlogBindIdExistValidation = (0, express_validator_1.param)('blogId').custom((value, { req }) => __awaiter(void 0, void 0, void 0, function* () {
-    const isExistBlogId = yield blogs_query_repository_1.blogsQueryRepository.getBlogById(value);
+    const isExistBlogId = yield composition_root_1.blogsQueryRepository.getBlogById(value);
     if (isExistBlogId) {
         return true;
     }

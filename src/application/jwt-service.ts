@@ -1,7 +1,4 @@
-import {currentUser} from "./current-user";
-
 const bcrypt = require('bcrypt');
-import {v4 as uuidv4} from "uuid";
 import {ObjectId} from "mongodb";
 import {usersQueryRepository} from "../users/query-repository/users-query-repository";
 

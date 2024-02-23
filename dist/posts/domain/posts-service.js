@@ -9,24 +9,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postsService = void 0;
-const posts_repositories_1 = require("../repositories/posts-repositories");
-exports.postsService = {
+exports.PostsService = void 0;
+class PostsService {
+    constructor(postsRepositories) {
+        this.postsRepositories = postsRepositories;
+    }
     createPost(post) {
         return __awaiter(this, void 0, void 0, function* () {
-            const newPostId = yield posts_repositories_1.postsRepositories.createPost(post);
+            const newPostId = yield this.postsRepositories.createPost(post);
             return newPostId ? newPostId : false;
         });
-    },
+    }
     updatePost(id, updatePost) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield posts_repositories_1.postsRepositories.updatePost(id, updatePost);
+            return yield this.postsRepositories.updatePost(id, updatePost);
         });
-    },
+    }
     deletePost(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield posts_repositories_1.postsRepositories.deletePost(id);
+            return yield this.postsRepositories.deletePost(id);
         });
-    },
-};
+    }
+}
+exports.PostsService = PostsService;
 //# sourceMappingURL=posts-service.js.map

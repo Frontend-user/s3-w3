@@ -31,10 +31,8 @@ export const bearerAuthMiddleware = async (req:Request, res:Response, next: Next
         res.sendStatus(401)
         return
     } else {
-
         currentUser.userId = userId
         currentUser.userLogin = getUserByID.login
-    // currentUser.updateCurrentUser(userId,getUserByID.login)
         next()
     }
 }

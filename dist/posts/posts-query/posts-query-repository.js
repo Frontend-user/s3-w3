@@ -9,13 +9,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postsQueryRepository = void 0;
+exports.PostsQueryRepository = void 0;
 const db_1 = require("../../db");
 const mongodb_1 = require("mongodb");
 const blogs_sorting_1 = require("../../blogs/blogs-query/utils/blogs-sorting");
 const blogs_paginate_1 = require("../../blogs/blogs-query/utils/blogs-paginate");
 const change_id_format_1 = require("../../common/custom-methods/change-id-format");
-exports.postsQueryRepository = {
+class PostsQueryRepository {
     getPosts(sortBy, sortDirection, pageNumber, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
             const sortQuery = blogs_sorting_1.blogsSorting.getSorting(sortBy, sortDirection);
@@ -32,7 +32,7 @@ exports.postsQueryRepository = {
                 "items": fixArrayIds
             };
         });
-    },
+    }
     getPostsByBlogId(blogId, sortBy, sortDirection, pageNumber, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
             const sortQuery = blogs_sorting_1.blogsSorting.getSorting(sortBy, sortDirection);
@@ -49,12 +49,13 @@ exports.postsQueryRepository = {
                 "items": fixArrayIds
             };
         });
-    },
+    }
     getPostById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const post = yield db_1.PostModel.findOne({ _id: new mongodb_1.ObjectId(id) }).lean();
             return post ? (0, change_id_format_1.changeIdFormat)(post) : false;
         });
-    },
-};
+    }
+}
+exports.PostsQueryRepository = PostsQueryRepository;
 //# sourceMappingURL=posts-query-repository.js.map

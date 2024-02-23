@@ -14,7 +14,7 @@ const app_1 = require("./app");
 const PORT = 3000;
 app_1.app.set('trust proxy', true);
 app_1.app.get('/', (req, res) => {
-    res.send('w');
+    res.send('Hello!');
 });
 const startApp = () => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, db_1.runDb)();

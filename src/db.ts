@@ -1,19 +1,12 @@
-import {MongoClient, ObjectId} from 'mongodb'
-import {BlogCreateType, BlogEntityType} from "./common/types/blog-type";
-
+import {MongoClient} from 'mongodb'
+import { BlogEntityType} from "./common/types/blog-type";
 import dotenv from 'dotenv'
-import {PostCreateType, PostEntityType} from "./common/types/post-type";
-import {UserCreateType, UserEmailEntityType, UserHashType} from "./users/types/user-types";
+import { PostEntityType} from "./common/types/post-type";
+import { UserEmailEntityType} from "./users/types/user-types";
 import mongoose from "mongoose";
-import {
-    blogSchema,
-    commentSchema,
-    deviceSchema,
-    postSchema,
-    recoveryCodeSchema,
-    tokenSchema,
-    userSchema
-} from "./schemas/schemas";
+import {blogSchema, commentSchema, deviceSchema, postSchema, recoveryCodeSchema, tokenSchema, userSchema} from "./schemas/schemas";
+import {RecoveryCodeType} from "./common/types/recovery-type";
+import {CommentCreateType} from "./comments/types/comment-type";
 
 
 dotenv.config()
@@ -25,26 +18,15 @@ if (!url) {
 
 console.log('url', url)
 
-
 export const client = new MongoClient(url)
-export const blogsCollection = client.db('db').collection<BlogEntityType | BlogCreateType>('blogs')
-export const postsCollection = client.db('db').collection<PostEntityType | PostCreateType>('posts')
-export const usersCollection = client.db('db').collection<UserEmailEntityType>('users')
-export const commentsCollection = client.db('db').collection('comments')
-export const tokensCollection = client.db('db').collection('tokens')
-export const devicesCollection = client.db('db').collection('devices')
-export type RecoveryCodeType = {
-    email: string
-    recoveryCode: string
-    userId:  {type: ObjectId, required: true}
-}
+
 
 export const UserModel = mongoose.model<UserEmailEntityType>('users', userSchema);
 export const DeviceModel = mongoose.model('devices', deviceSchema);
 export const TokenModel = mongoose.model('tokens', tokenSchema);
 export const BlogModel = mongoose.model<BlogEntityType>('blogs', blogSchema);
 export const PostModel = mongoose.model<PostEntityType>('posts', postSchema);
-export const CommentModel = mongoose.model('comments', commentSchema);
+export const CommentModel = mongoose.model<CommentCreateType>('comments', commentSchema);
 
 export const RecoveryCodeModel = mongoose.model<RecoveryCodeType>('recovery-code', recoveryCodeSchema);
 export const runDb = async () => {

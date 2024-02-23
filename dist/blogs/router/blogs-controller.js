@@ -12,19 +12,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.BlogsControllerConstructor = exports.blogs = void 0;
 const http_statuses_1 = require("../../common/constants/http-statuses");
 const mongodb_1 = require("mongodb");
-const blogs_query_repository_1 = require("../blogs-query/blogs-query-repository");
 const query_data_1 = require("../../common/custom-methods/query-data");
+const composition_root_1 = require("../../common/composition-root/composition-root");
 exports.blogs = [];
 class BlogsControllerConstructor {
-    constructor(blogsService) {
+    constructor(blogsService, blogsQueryRepository, postsQueryRepository, postsService) {
         this.blogsService = blogsService;
+        this.blogsQueryRepository = blogsQueryRepository;
+        this.postsQueryRepository = postsQueryRepository;
+        this.postsService = postsService;
     }
     getBlogs(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 let { sortBy, sortDirection, pageNumber, pageSize } = (0, query_data_1.getQueryData)(req);
                 let searchNameTerm = req.query.searchNameTerm ? String(req.query.searchNameTerm) : undefined;
-                const blogs = yield blogs_query_repository_1.blogsQueryRepository.getBlogs(searchNameTerm, sortBy, sortDirection, pageNumber, pageSize);
+                const blogs = yield this.blogsQueryRepository.getBlogs(searchNameTerm, sortBy, sortDirection, pageNumber, pageSize);
                 res.status(http_statuses_1.HTTP_STATUSES.OK_200).send(blogs);
             }
             catch (error) {
@@ -35,7 +38,7 @@ class BlogsControllerConstructor {
     }
     getBlogById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const blog = yield blogs_query_repository_1.blogsQueryRepository.getBlogById(req.params.id);
+            const blog = yield this.blogsQueryRepository.getBlogById(req.params.id);
             if (!blog) {
                 res.sendStatus(http_statuses_1.HTTP_STATUSES.NOT_FOUND_404);
                 return;
@@ -53,7 +56,7 @@ class BlogsControllerConstructor {
                 };
                 const response = yield this.blogsService.createBlog(newBlog);
                 if (response) {
-                    const createdBlog = yield blogs_query_repository_1.blogsQueryRepository.getBlogById(String(response));
+                    const createdBlog = yield this.blogsQueryRepository.getBlogById(String(response));
                     res.status(http_statuses_1.HTTP_STATUSES.CREATED_201).send(createdBlog);
                     return;
                 }
@@ -87,6 +90,48 @@ class BlogsControllerConstructor {
             }
             catch (error) {
                 res.sendStatus(http_statuses_1.HTTP_STATUSES.NOT_FOUND_404);
+            }
+        });
+    }
+    getPostByBlogId(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let { sortBy, sortDirection, pageNumber, pageSize } = (0, query_data_1.getQueryData)(req);
+            try {
+                const posts = yield this.postsQueryRepository.getPostsByBlogId(String(req.params.blogId), sortBy, sortDirection, pageNumber, pageSize);
+                res.send(posts);
+            }
+            catch (error) {
+                console.error('Ошибка при получении данных из коллекции:', error);
+                res.sendStatus(http_statuses_1.HTTP_STATUSES.SERVER_ERROR_500);
+            }
+        });
+    }
+    createPostInBlogs(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let getBlogName;
+            const getBlog = yield composition_root_1.blogsQueryRepository.getBlogById(req.params.blogId);
+            if (getBlog) {
+                getBlogName = getBlog.name;
+                let newPost = {
+                    title: req.body.title,
+                    shortDescription: req.body.shortDescription,
+                    content: req.body.content,
+                    blogId: req.params.blogId,
+                    blogName: getBlogName,
+                    createdAt: new Date().toISOString()
+                };
+                try {
+                    const response = yield this.postsService.createPost(newPost);
+                    const createdPost = yield this.postsQueryRepository.getPostById(String(response));
+                    if (!createdPost) {
+                        res.sendStatus(http_statuses_1.HTTP_STATUSES.SERVER_ERROR_500);
+                        return;
+                    }
+                    res.status(http_statuses_1.HTTP_STATUSES.CREATED_201).send(createdPost);
+                }
+                catch (error) {
+                    res.sendStatus(http_statuses_1.HTTP_STATUSES.SERVER_ERROR_500);
+                }
             }
         });
     }

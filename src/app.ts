@@ -1,7 +1,5 @@
-import express, {NextFunction, Request, Response, Router} from 'express'
-import {runDb} from "./db";
+import express from 'express'
 import {testRouter} from "./routes/test-router";
-import {blogsPostsBindRouter} from "./routes/blogs-posts-bindings-router";
 import {usersRouter} from "./users/router/users-router";
 import {postsRouter} from "./posts/router/posts-router";
 import {authRouter} from "./auth/auth-router/auth-router";
@@ -19,6 +17,5 @@ app.use('/users', usersRouter)
 app.use('/comments', commentsRouter)
 app.use('/auth', authRouter)
 app.use('/testing',testRouter)
-app.use('/blogs',blogsPostsBindRouter)
 app.use('/security/devices',securityRouter)
 

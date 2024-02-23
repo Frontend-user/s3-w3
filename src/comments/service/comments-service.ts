@@ -1,11 +1,7 @@
 import {commentsRepository} from "../repository/comments-repository";
-import {CommentCreateType, CommentEntity} from "../types/comment-type";
+import {CommentCreateType } from "../types/comment-type";
 import {currentUser} from "../../application/current-user";
-import {changeIdFormat} from "../../common/custom-methods/change-id-format";
 import {ObjectId} from "mongodb";
-import {PostUpdateType} from "../../common/types/post-type";
-import {postsRepositories} from "../../posts/repositories/posts-repositories";
-import {commentQueryRepository} from "../query-repository/comment-query-repository";
 
 export const commentsService = {
     async createComment(comment: string, postId: string) {

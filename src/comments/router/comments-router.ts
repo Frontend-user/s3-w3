@@ -1,8 +1,4 @@
-import {NextFunction, Request, Response, Router} from "express";
-import {BlogViewType} from "../../common/types/blog-type";
-import {blogsQueryRepository} from "../../blogs/blogs-query/blogs-query-repository";
-import {PostCreateType, PostViewType} from "../../common/types/post-type";
-import {postsService} from "../../posts/domain/posts-service";
+import { Request, Response, Router} from "express";
 import {ObjectId} from "mongodb";
 import {HTTP_STATUSES} from "../../common/constants/http-statuses";
 import {commentsService} from "../service/comments-service";

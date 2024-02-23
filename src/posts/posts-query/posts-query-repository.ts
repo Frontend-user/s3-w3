@@ -6,7 +6,7 @@ import {blogsPaginate} from "../../blogs/blogs-query/utils/blogs-paginate";
 import {Pagination} from "../../common/types/pagination";
 import {changeIdFormat} from "../../common/custom-methods/change-id-format";
 
-export const postsQueryRepository = {
+export class PostsQueryRepository {
     async getPosts(sortBy?: string, sortDirection?: string, pageNumber?: number, pageSize?: number): Promise<Pagination<PostViewType[]>> {
         const sortQuery = blogsSorting.getSorting(sortBy, sortDirection)
         const {skip, limit, newPageNumber, newPageSize} = blogsPaginate.getPagination(pageNumber, pageSize)
@@ -24,7 +24,7 @@ export const postsQueryRepository = {
             "totalCount": allPosts.length,
             "items": fixArrayIds
         }
-    },
+    }
     async getPostsByBlogId(blogId?: string, sortBy?: string, sortDirection?: string, pageNumber?: number, pageSize?: number):Promise<Pagination<PostViewType[]>>  {
         const sortQuery = blogsSorting.getSorting(sortBy, sortDirection)
         const {skip, limit, newPageNumber, newPageSize} = blogsPaginate.getPagination(pageNumber, pageSize)
@@ -42,13 +42,10 @@ export const postsQueryRepository = {
             "totalCount": allPosts.length,
             "items": fixArrayIds
         }
-    },
+    }
 
     async getPostById(id: string): Promise<PostViewType | boolean> {
         const post: PostEntityType | null = await PostModel.findOne({_id: new ObjectId(id)}).lean()
         return post ?  changeIdFormat(post) : false
-    },
-
-
-
+    }
 }

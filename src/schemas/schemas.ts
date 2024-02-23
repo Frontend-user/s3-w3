@@ -3,7 +3,7 @@ import {PostEntityType} from "../common/types/post-type";
 import {ObjectId} from "mongodb";
 import {BlogEntityType} from "../common/types/blog-type";
 import {UserEmailEntityType} from "../users/types/user-types";
-import {RecoveryCodeType} from "../db";
+import {RecoveryCodeType} from "../common/types/recovery-type";
 
 export const commentSchema = new mongoose.Schema({
     content: {type: String, required: true},

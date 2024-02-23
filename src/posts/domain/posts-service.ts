@@ -1,23 +1,22 @@
 import {ObjectId} from "mongodb";
-import {PostCreateType, PostEntityType, PostUpdateType, PostViewType} from "../../common/types/post-type";
-import {postsRepositories} from "../repositories/posts-repositories";
+import {PostCreateType, PostUpdateType } from "../../common/types/post-type";
+import {PostsRepositories} from "../repositories/posts-repositories";
 
-
-
-export const postsService = {
-
+export class PostsService {
+    constructor(protected postsRepositories:PostsRepositories) {
+    }
     async createPost(post: PostCreateType): Promise<false | string> {
-        const newPostId = await postsRepositories.createPost(post)
+        const newPostId = await this.postsRepositories.createPost(post)
         return newPostId ? newPostId : false
-    },
+    }
 
     async updatePost(id: ObjectId, updatePost: PostUpdateType): Promise<boolean> {
-        return await postsRepositories.updatePost(id, updatePost)
-    },
+        return await this.postsRepositories.updatePost(id, updatePost)
+    }
 
 
     async deletePost(id: ObjectId): Promise<boolean> {
-        return await postsRepositories.deletePost(id)
-    },
-
+        return await this.postsRepositories.deletePost(id)
+    }
 }
+

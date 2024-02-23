@@ -1,27 +1,31 @@
-import {raw, Request, Response, Router} from "express";
-import {
-    blogDescValidation, blogIdValidation, blogNameValidation,
-    blogWebUrlValidation, blogWebUrlValidation2, inputValidationMiddleware
-} from "../../validation/blogs-validation";
-import {authorizationMiddleware} from "../../validation/auth-validation";
+import {Request, Response} from "express";
 import {BlogUpdateType, BlogViewType} from "../../common/types/blog-type";
 import {HTTP_STATUSES} from "../../common/constants/http-statuses";
 
 import {ObjectId} from "mongodb";
 import {BlogsService} from "../domain/blogs-service";
-import {blogsQueryRepository} from "../blogs-query/blogs-query-repository";
+import {BlogsQueryRepository} from "../blogs-query/blogs-query-repository";
 import {getQueryData} from "../../common/custom-methods/query-data";
+import {blogsQueryRepository} from "../../common/composition-root/composition-root";
+import {PostCreateType, PostViewType} from "../../common/types/post-type";
+import {PostsQueryRepository} from "../../posts/posts-query/posts-query-repository";
+import {PostsService} from "../../posts/domain/posts-service";
 
 export const blogs: BlogViewType[] = []
+
 export class BlogsControllerConstructor {
-    constructor(protected blogsService: BlogsService) {}
+    constructor(protected blogsService: BlogsService,
+                protected blogsQueryRepository: BlogsQueryRepository,
+                protected postsQueryRepository: PostsQueryRepository,
+                protected postsService: PostsService) {
+    }
 
     async getBlogs(req: Request, res: Response) {
         try {
             let {sortBy, sortDirection, pageNumber, pageSize} = getQueryData(req)
             let searchNameTerm = req.query.searchNameTerm ? String(req.query.searchNameTerm) : undefined
 
-            const blogs = await blogsQueryRepository.getBlogs(searchNameTerm, sortBy, sortDirection, pageNumber, pageSize)
+            const blogs = await this.blogsQueryRepository.getBlogs(searchNameTerm, sortBy, sortDirection, pageNumber, pageSize)
             res.status(HTTP_STATUSES.OK_200).send(blogs)
         } catch (error) {
             console.error('Ошибка при получении данных из коллекции:', error);
@@ -30,7 +34,7 @@ export class BlogsControllerConstructor {
     }
 
     async getBlogById(req: Request, res: Response) {
-        const blog = await blogsQueryRepository.getBlogById(req.params.id)
+        const blog = await this.blogsQueryRepository.getBlogById(req.params.id)
         if (!blog) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
             return
@@ -48,7 +52,7 @@ export class BlogsControllerConstructor {
             }
             const response: ObjectId | false = await this.blogsService.createBlog(newBlog)
             if (response) {
-                const createdBlog: BlogViewType | boolean = await blogsQueryRepository.getBlogById(String(response))
+                const createdBlog: BlogViewType | boolean = await this.blogsQueryRepository.getBlogById(String(response))
                 res.status(HTTP_STATUSES.CREATED_201).send(createdBlog)
                 return
             }
@@ -69,7 +73,8 @@ export class BlogsControllerConstructor {
 
         try {
             const response: boolean = await this.blogsService.updateBlog(new ObjectId(req.params.id), blogDataToUpdate)
-            res.sendStatus(response ? HTTP_STATUSES.NO_CONTENT_204 : HTTP_STATUSES.NOT_FOUND_404)} catch
+            res.sendStatus(response ? HTTP_STATUSES.NO_CONTENT_204 : HTTP_STATUSES.NOT_FOUND_404)
+        } catch
             (error) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
         }
@@ -82,6 +87,48 @@ export class BlogsControllerConstructor {
 
         } catch (error) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+        }
+    }
+
+    async getPostByBlogId(req: Request, res: Response) {
+        let {sortBy, sortDirection, pageNumber, pageSize} = getQueryData(req)
+
+        try {
+            const posts = await this.postsQueryRepository.getPostsByBlogId(String(req.params.blogId), sortBy, sortDirection, pageNumber, pageSize)
+            res.send(posts)
+        } catch (error) {
+            console.error('Ошибка при получении данных из коллекции:', error);
+            res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500)
+        }
+    }
+
+    async createPostInBlogs(req: Request, res: Response) {
+        let getBlogName
+        const getBlog: BlogViewType | boolean = await blogsQueryRepository.getBlogById(req.params.blogId)
+        if (getBlog) {
+            getBlogName = getBlog.name
+            let newPost: PostCreateType = {
+                title: req.body.title,
+                shortDescription: req.body.shortDescription,
+                content: req.body.content,
+                blogId: req.params.blogId,
+                blogName: getBlogName,
+                createdAt: new Date().toISOString()
+            }
+
+            try {
+                const response = await this.postsService.createPost(newPost)
+                const createdPost: PostViewType | boolean = await this.postsQueryRepository.getPostById(String(response))
+                if (!createdPost) {
+                    res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500)
+                    return
+                }
+                res.status(HTTP_STATUSES.CREATED_201).send(createdPost)
+
+
+            } catch (error) {
+                res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500)
+            }
         }
     }
 }

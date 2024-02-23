@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.app = void 0;
 const express_1 = __importDefault(require("express"));
 const test_router_1 = require("./routes/test-router");
-const blogs_posts_bindings_router_1 = require("./routes/blogs-posts-bindings-router");
 const users_router_1 = require("./users/router/users-router");
 const posts_router_1 = require("./posts/router/posts-router");
 const auth_router_1 = require("./auth/auth-router/auth-router");
@@ -24,6 +23,5 @@ exports.app.use('/users', users_router_1.usersRouter);
 exports.app.use('/comments', comments_router_1.commentsRouter);
 exports.app.use('/auth', auth_router_1.authRouter);
 exports.app.use('/testing', test_router_1.testRouter);
-exports.app.use('/blogs', blogs_posts_bindings_router_1.blogsPostsBindRouter);
 exports.app.use('/security/devices', security_router_1.securityRouter);
 //# sourceMappingURL=app.js.map

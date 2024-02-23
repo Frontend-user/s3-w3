@@ -9,26 +9,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postsRepositories = void 0;
+exports.PostsRepositories = void 0;
 const db_1 = require("../../db");
-exports.postsRepositories = {
+class PostsRepositories {
     createPost(post) {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield db_1.PostModel.create(post);
             return response ? String(response._id) : false;
         });
-    },
+    }
     updatePost(id, updatePost) {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield db_1.PostModel.updateOne({ _id: id }, updatePost);
             return response.matchedCount === 1;
         });
-    },
+    }
     deletePost(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield db_1.PostModel.deleteOne({ _id: id });
             return !!response.deletedCount;
         });
-    },
-};
+    }
+}
+exports.PostsRepositories = PostsRepositories;
 //# sourceMappingURL=posts-repositories.js.map

@@ -12,9 +12,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.commentDeleteInputValidationMiddleware = exports.commentInputValidationMiddleware = exports.haveAccesForUpdate = exports.commentPostIdExistValidation = exports.IdExistValidation = exports.commentIdExistValidation = exports.commentContentValidation = void 0;
 const express_validator_1 = require("express-validator");
 const mongodb_1 = require("mongodb");
-const posts_query_repository_1 = require("../../posts/posts-query/posts-query-repository");
 const comment_query_repository_1 = require("../query-repository/comment-query-repository");
 const current_user_1 = require("../../application/current-user");
+const composition_root_1 = require("../../common/composition-root/composition-root");
 exports.commentContentValidation = (0, express_validator_1.body)('content').trim().isLength({ min: 20, max: 300 }).withMessage({
     message: 'content is wrong',
     field: 'content'
@@ -44,7 +44,7 @@ exports.IdExistValidation = (0, express_validator_1.param)('id').custom((value, 
     field: 'id'
 });
 exports.commentPostIdExistValidation = (0, express_validator_1.param)('postId').custom((value, { req }) => __awaiter(void 0, void 0, void 0, function* () {
-    const isExistPostId = yield posts_query_repository_1.postsQueryRepository.getPostById(value);
+    const isExistPostId = yield composition_root_1.postsQueryRepository.getPostById(value);
     if (isExistPostId) {
         return true;
     }

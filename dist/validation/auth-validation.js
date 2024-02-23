@@ -41,7 +41,6 @@ const bearerAuthMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 
     else {
         current_user_1.currentUser.userId = userId;
         current_user_1.currentUser.userLogin = getUserByID.login;
-        // currentUser.updateCurrentUser(userId,getUserByID.login)
         next();
     }
 });

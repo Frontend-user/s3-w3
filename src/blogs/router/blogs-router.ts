@@ -1,4 +1,4 @@
-import {blogsController} from "../composition-root/composition-root";
+import {blogsController } from "../../common/composition-root/composition-root";
 import {
     blogDescValidation,
     blogIdValidation,
@@ -6,8 +6,20 @@ import {
     blogWebUrlValidation, blogWebUrlValidation2, inputValidationMiddleware
 } from "../../validation/blogs-validation";
 import {authorizationMiddleware} from "../../validation/auth-validation";
-import {Router} from "express";
-
+import { Router} from "express";
+import {
+    blogsPostsBindingInputValidationMiddleware,
+    postBlogBindIdExistValidation
+} from "../../validation/blogs-posts-bind-validation";
+import {postContentValidation, postDescValidation, postTitleValidation} from "../../validation/posts-validation";
+export const blogsPostBindValidators = [
+    authorizationMiddleware,
+    postTitleValidation,
+    postDescValidation,
+    postContentValidation,
+    postBlogBindIdExistValidation,
+    blogsPostsBindingInputValidationMiddleware
+]
 const blogValidators = [
     authorizationMiddleware,
     blogDescValidation,
@@ -24,4 +36,7 @@ blogsRouter.post('/', ...blogValidators, blogsController.createBlog.bind(blogsCo
 blogsRouter.put('/:id', ...blogValidators, blogsController.updateBlog.bind(blogsController))
 blogsRouter.delete('/:id', authorizationMiddleware, blogIdValidation, blogsController.deleteBlog.bind(blogsController))
 
+blogsRouter.get('/:blogId/posts', postBlogBindIdExistValidation, blogsPostsBindingInputValidationMiddleware, blogsController.getPostByBlogId.bind(blogsController))
+
+blogsRouter.post('/:blogId/posts', ...blogsPostBindValidators, blogsController.createPostInBlogs.bind(blogsController))
 
