@@ -33,21 +33,21 @@ postsRouter.post('/:postId/comments',
     bearerAuthMiddleware,
     commentPostIdExistValidation,
     commentContentValidation,
-    commentInputValidationMiddleware, postsController.createCommentByPostId.bind(PostsController))
+    commentInputValidationMiddleware, postsController.createCommentByPostId.bind(postsController))
 
 postsRouter.get('/:postId/comments',
     commentPostIdExistValidation,
     commentInputValidationMiddleware,
-    postsController.createCommentByPostId.bind(PostsController))
+    postsController.createCommentByPostId.bind(postsController))
 
-postsRouter.get('/', postsController.getPosts.bind(PostsController))
+postsRouter.get('/', postsController.getPosts.bind(postsController))
 
 
-postsRouter.get('/:id', postIdValidation, postsController.getPostById.bind(PostsController))
+postsRouter.get('/:id', postIdValidation, postsController.getPostById.bind(postsController))
 
-postsRouter.post('/', ...postValidators, postsController.createPost.bind(PostsController))
+postsRouter.post('/', ...postValidators, postsController.createPost.bind(postsController))
 
-postsRouter.put('/:id', ...postValidators, postsController.updatePost.bind(PostsController))
+postsRouter.put('/:id', ...postValidators, postsController.updatePost.bind(postsController))
 
 
 postsRouter.delete('/:id',
