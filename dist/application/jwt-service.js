@@ -17,7 +17,7 @@ const jwt = require('jsonwebtoken');
 exports.jwtService = {
     createJWT(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield jwt.sign({ userId: userId }, process.env.JWT_SECRET, { expiresIn: '10s' });
+            return yield jwt.sign({ userId: userId }, process.env.JWT_SECRET, { expiresIn: '10m' });
         });
     },
     createRefreshToken(userId, newDeviceId) {
@@ -25,7 +25,7 @@ exports.jwtService = {
             return yield jwt.sign({
                 userId: userId,
                 deviceId: newDeviceId
-            }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '20s' });
+            }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '10h' });
         });
     },
     checkRefreshToken(token) {

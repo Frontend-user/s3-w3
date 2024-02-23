@@ -9,13 +9,13 @@ const jwt = require('jsonwebtoken')
 export const jwtService = {
     async createJWT(userId: any) {
 
-        return await jwt.sign({userId: userId}, process.env.JWT_SECRET, {expiresIn: '10s'})
+        return await jwt.sign({userId: userId}, process.env.JWT_SECRET, {expiresIn: '10m'})
     },
     async createRefreshToken(userId: ObjectId | string, newDeviceId: string) {
         return await jwt.sign({
             userId: userId,
             deviceId: newDeviceId
-        }, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '20s'})
+        }, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '10h'})
 
     },
     async checkRefreshToken(token: string) {
