@@ -46,6 +46,7 @@ exports.commentQueryRepository = {
     changeCommentFormat(obj) {
         obj.id = obj._id;
         delete obj._id;
+        delete obj.__v;
         delete obj.postId;
         return obj;
     }

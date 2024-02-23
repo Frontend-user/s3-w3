@@ -35,6 +35,7 @@ export const commentQueryRepository = {
     changeCommentFormat (obj: any){
         obj.id = obj._id
         delete obj._id
+        delete obj.__v
         delete obj.postId
         return obj
     }
