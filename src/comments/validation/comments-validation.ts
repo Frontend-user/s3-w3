@@ -2,11 +2,10 @@ import {body, param, validationResult} from "express-validator";
 import {ObjectId} from "mongodb";
 import {PostViewType} from "../../common/types/post-type";
 import {CommentEntity} from "../types/comment-type";
-import {commentQueryRepository} from "../query-repository/comment-query-repository";
 import {NextFunction, Request, Response} from "express";
 import {ErrorType} from "../../common/types/error-type";
 import {currentUser} from "../../application/current-user";
-import {postsQueryRepository} from "../../common/composition-root/composition-root";
+import {commentQueryRepository, postsQueryRepository} from "../../common/composition-root/composition-root";
 
 export const commentContentValidation = body('content').trim().isLength({min: 20, max: 300}).withMessage({
     message: 'content is wrong',

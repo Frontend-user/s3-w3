@@ -10,27 +10,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostsController = void 0;
-const comments_service_1 = require("../../comments/service/comments-service");
-const comment_query_repository_1 = require("../../comments/query-repository/comment-query-repository");
 const query_data_1 = require("../../common/custom-methods/query-data");
 const http_statuses_1 = require("../../common/constants/http-statuses");
-const composition_root_1 = require("../../common/composition-root/composition-root");
 const mongodb_1 = require("mongodb");
+const composition_root_1 = require("../../common/composition-root/composition-root");
 class PostsController {
-    constructor(postsQueryRepository, postsService) {
+    constructor(postsQueryRepository, postsService, blogsQueryRepository, commentsService, commentQueryRepository) {
         this.postsQueryRepository = postsQueryRepository;
         this.postsService = postsService;
+        this.blogsQueryRepository = blogsQueryRepository;
+        this.commentsService = commentsService;
+        this.commentQueryRepository = commentQueryRepository;
     }
     createCommentByPostId(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const commentContent = req.body.content;
             const postId = req.params.postId;
-            const commentId = yield comments_service_1.commentsService.createComment(commentContent, postId);
+            const commentId = yield composition_root_1.commentsService.createComment(commentContent, postId);
             if (!commentId) {
                 res.sendStatus(404);
             }
             else {
-                const comment = yield comment_query_repository_1.commentQueryRepository.getCommentById(commentId);
+                const comment = yield composition_root_1.commentQueryRepository.getCommentById(commentId);
                 delete comment.postId;
                 res.status(201).send(comment);
             }
@@ -41,7 +42,7 @@ class PostsController {
             let { sortBy, sortDirection, pageNumber, pageSize } = (0, query_data_1.getQueryData)(req);
             const postId = req.params.postId;
             try {
-                const comment = yield comment_query_repository_1.commentQueryRepository.getCommentsByPostId(postId, sortBy, sortDirection, pageNumber, pageSize);
+                const comment = yield composition_root_1.commentQueryRepository.getCommentsByPostId(postId, sortBy, sortDirection, pageNumber, pageSize);
                 res.status(200).send(comment);
             }
             catch (e) {
@@ -80,7 +81,7 @@ class PostsController {
     createPost(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             let getBlogName;
-            const getBlog = yield composition_root_1.blogsQueryRepository.getBlogById(req.body.blogId);
+            const getBlog = yield this.blogsQueryRepository.getBlogById(req.body.blogId);
             if (getBlog) {
                 getBlogName = getBlog.name;
                 let newPost = {

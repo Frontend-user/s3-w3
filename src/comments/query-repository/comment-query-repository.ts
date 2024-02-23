@@ -2,12 +2,7 @@ import {CommentModel} from "../../db";
 import {ObjectId} from "mongodb";
 import {blogsSorting} from "../../blogs/blogs-query/utils/blogs-sorting";
 import {blogsPaginate} from "../../blogs/blogs-query/utils/blogs-paginate";
-
-export const commentQueryRepository = {
-    async getCommentByCommentId() {
-        const comments = await CommentModel.find({}).lean()
-        return comments
-    },
+export class CommentQueryRepository {
     async getCommentsByPostId(postId: string, sortBy?: string, sortDirection?: string, pageNumber?: number, pageSize?: number) {
         const sortQuery = blogsSorting.getSorting(sortBy, sortDirection)
         const {skip, limit, newPageNumber, newPageSize} = blogsPaginate.getPagination(pageNumber, pageSize)
@@ -25,12 +20,12 @@ export const commentQueryRepository = {
             "items": fixArrayIds
         }
 
-    },
+    }
     async getCommentById(commentId: ObjectId) {
         const comment = await CommentModel.findOne({_id: commentId}).lean()
 
         return comment ? this.changeCommentFormat(comment) : false
-    },
+    }
 
     changeCommentFormat (obj: any){
         obj.id = obj._id

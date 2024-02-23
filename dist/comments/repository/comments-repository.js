@@ -9,26 +9,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.commentsRepository = void 0;
+exports.CommentsRepository = void 0;
 const db_1 = require("../../db");
-exports.commentsRepository = {
+class CommentsRepository {
     createComment(comment) {
         return __awaiter(this, void 0, void 0, function* () {
             let response = yield db_1.CommentModel.create(comment);
             return response ? response._id : false;
         });
-    },
+    }
     updateComment(id, updateComment) {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield db_1.CommentModel.updateOne({ _id: id }, updateComment);
             return response.matchedCount === 1;
         });
-    },
+    }
     deleteCommentById(commentId) {
         return __awaiter(this, void 0, void 0, function* () {
             const comment = yield db_1.CommentModel.deleteOne({ _id: commentId });
             return !!comment;
         });
-    },
-};
+    }
+}
+exports.CommentsRepository = CommentsRepository;
 //# sourceMappingURL=comments-repository.js.map

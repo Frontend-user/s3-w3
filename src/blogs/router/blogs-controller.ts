@@ -4,12 +4,11 @@ import {HTTP_STATUSES} from "../../common/constants/http-statuses";
 
 import {ObjectId} from "mongodb";
 import {BlogsService} from "../domain/blogs-service";
-import {BlogsQueryRepository} from "../blogs-query/blogs-query-repository";
 import {getQueryData} from "../../common/custom-methods/query-data";
-import {blogsQueryRepository} from "../../common/composition-root/composition-root";
 import {PostCreateType, PostViewType} from "../../common/types/post-type";
-import {PostsQueryRepository} from "../../posts/posts-query/posts-query-repository";
 import {PostsService} from "../../posts/domain/posts-service";
+import {BlogsQueryRepository} from "../blogs-query/blogs-query-repository";
+import {PostsQueryRepository} from "../../posts/posts-query/posts-query-repository";
 
 export const blogs: BlogViewType[] = []
 
@@ -104,7 +103,7 @@ export class BlogsControllerConstructor {
 
     async createPostInBlogs(req: Request, res: Response) {
         let getBlogName
-        const getBlog: BlogViewType | boolean = await blogsQueryRepository.getBlogById(req.params.blogId)
+        const getBlog: BlogViewType | boolean = await this.blogsQueryRepository.getBlogById(req.params.blogId)
         if (getBlog) {
             getBlogName = getBlog.name
             let newPost: PostCreateType = {

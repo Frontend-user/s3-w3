@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.commentDeleteInputValidationMiddleware = exports.commentInputValidationMiddleware = exports.haveAccesForUpdate = exports.commentPostIdExistValidation = exports.IdExistValidation = exports.commentIdExistValidation = exports.commentContentValidation = void 0;
 const express_validator_1 = require("express-validator");
 const mongodb_1 = require("mongodb");
-const comment_query_repository_1 = require("../query-repository/comment-query-repository");
 const current_user_1 = require("../../application/current-user");
 const composition_root_1 = require("../../common/composition-root/composition-root");
 exports.commentContentValidation = (0, express_validator_1.body)('content').trim().isLength({ min: 20, max: 300 }).withMessage({
@@ -20,7 +19,7 @@ exports.commentContentValidation = (0, express_validator_1.body)('content').trim
     field: 'content'
 });
 exports.commentIdExistValidation = (0, express_validator_1.param)('commentId').custom((value, { req }) => __awaiter(void 0, void 0, void 0, function* () {
-    const isExistCommentId = yield comment_query_repository_1.commentQueryRepository.getCommentById(new mongodb_1.ObjectId(value));
+    const isExistCommentId = yield composition_root_1.commentQueryRepository.getCommentById(new mongodb_1.ObjectId(value));
     if (isExistCommentId) {
         return true;
     }
@@ -32,7 +31,7 @@ exports.commentIdExistValidation = (0, express_validator_1.param)('commentId').c
     field: 'commentId'
 });
 exports.IdExistValidation = (0, express_validator_1.param)('id').custom((value, { req }) => __awaiter(void 0, void 0, void 0, function* () {
-    const isExistId = yield comment_query_repository_1.commentQueryRepository.getCommentById(new mongodb_1.ObjectId(value));
+    const isExistId = yield composition_root_1.commentQueryRepository.getCommentById(new mongodb_1.ObjectId(value));
     if (isExistId) {
         return true;
     }
@@ -56,7 +55,7 @@ exports.commentPostIdExistValidation = (0, express_validator_1.param)('postId').
     field: 'postId'
 });
 exports.haveAccesForUpdate = (0, express_validator_1.param)('commentId').custom((value, { req }) => __awaiter(void 0, void 0, void 0, function* () {
-    const comment = yield comment_query_repository_1.commentQueryRepository.getCommentById(new mongodb_1.ObjectId(value));
+    const comment = yield composition_root_1.commentQueryRepository.getCommentById(new mongodb_1.ObjectId(value));
     if (current_user_1.currentUser.userLogin === comment.commentatorInfo.userLogin && current_user_1.currentUser.userId === comment.commentatorInfo.userId) {
         return true;
     }

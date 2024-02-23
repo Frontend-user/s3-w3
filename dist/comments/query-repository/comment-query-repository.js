@@ -9,17 +9,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.commentQueryRepository = void 0;
+exports.CommentQueryRepository = void 0;
 const db_1 = require("../../db");
 const blogs_sorting_1 = require("../../blogs/blogs-query/utils/blogs-sorting");
 const blogs_paginate_1 = require("../../blogs/blogs-query/utils/blogs-paginate");
-exports.commentQueryRepository = {
-    getCommentByCommentId() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const comments = yield db_1.CommentModel.find({}).lean();
-            return comments;
-        });
-    },
+class CommentQueryRepository {
     getCommentsByPostId(postId, sortBy, sortDirection, pageNumber, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
             const sortQuery = blogs_sorting_1.blogsSorting.getSorting(sortBy, sortDirection);
@@ -36,13 +30,13 @@ exports.commentQueryRepository = {
                 "items": fixArrayIds
             };
         });
-    },
+    }
     getCommentById(commentId) {
         return __awaiter(this, void 0, void 0, function* () {
             const comment = yield db_1.CommentModel.findOne({ _id: commentId }).lean();
             return comment ? this.changeCommentFormat(comment) : false;
         });
-    },
+    }
     changeCommentFormat(obj) {
         obj.id = obj._id;
         delete obj._id;
@@ -50,5 +44,6 @@ exports.commentQueryRepository = {
         delete obj.postId;
         return obj;
     }
-};
+}
+exports.CommentQueryRepository = CommentQueryRepository;
 //# sourceMappingURL=comment-query-repository.js.map

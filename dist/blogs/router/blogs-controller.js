@@ -13,7 +13,6 @@ exports.BlogsControllerConstructor = exports.blogs = void 0;
 const http_statuses_1 = require("../../common/constants/http-statuses");
 const mongodb_1 = require("mongodb");
 const query_data_1 = require("../../common/custom-methods/query-data");
-const composition_root_1 = require("../../common/composition-root/composition-root");
 exports.blogs = [];
 class BlogsControllerConstructor {
     constructor(blogsService, blogsQueryRepository, postsQueryRepository, postsService) {
@@ -109,7 +108,7 @@ class BlogsControllerConstructor {
     createPostInBlogs(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             let getBlogName;
-            const getBlog = yield composition_root_1.blogsQueryRepository.getBlogById(req.params.blogId);
+            const getBlog = yield this.blogsQueryRepository.getBlogById(req.params.blogId);
             if (getBlog) {
                 getBlogName = getBlog.name;
                 let newPost = {

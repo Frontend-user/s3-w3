@@ -1,9 +1,11 @@
-import {commentsRepository} from "../repository/comments-repository";
 import {CommentCreateType } from "../types/comment-type";
 import {currentUser} from "../../application/current-user";
 import {ObjectId} from "mongodb";
+import {CommentsRepository} from "../repository/comments-repository";
 
-export const commentsService = {
+export class CommentsService {
+    constructor(protected commentsRepository:CommentsRepository) {
+    }
     async createComment(comment: string, postId: string) {
         const newComment: CommentCreateType = {
             content: comment,
@@ -14,15 +16,14 @@ export const commentsService = {
             },
             createdAt: new Date().toISOString()
         }
-        const response = await commentsRepository.createComment(newComment)
+        const response = await this.commentsRepository.createComment(newComment)
         return response
-    },
+    }
 
     async updateComment(id: ObjectId, content: string): Promise<boolean> {
-        return await commentsRepository.updateComment(id, {content: content})
-    },
+        return await this.commentsRepository.updateComment(id, {content: content})
+    }
     async deleteComment(id: ObjectId): Promise<boolean > {
-        return await commentsRepository.deleteCommentById(id)
-    },
-
+        return await this.commentsRepository.deleteCommentById(id)
+    }
 }

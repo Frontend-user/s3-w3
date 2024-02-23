@@ -9,10 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.commentsService = void 0;
-const comments_repository_1 = require("../repository/comments-repository");
+exports.CommentsService = void 0;
 const current_user_1 = require("../../application/current-user");
-exports.commentsService = {
+class CommentsService {
+    constructor(commentsRepository) {
+        this.commentsRepository = commentsRepository;
+    }
     createComment(comment, postId) {
         return __awaiter(this, void 0, void 0, function* () {
             const newComment = {
@@ -24,19 +26,20 @@ exports.commentsService = {
                 },
                 createdAt: new Date().toISOString()
             };
-            const response = yield comments_repository_1.commentsRepository.createComment(newComment);
+            const response = yield this.commentsRepository.createComment(newComment);
             return response;
         });
-    },
+    }
     updateComment(id, content) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield comments_repository_1.commentsRepository.updateComment(id, { content: content });
+            return yield this.commentsRepository.updateComment(id, { content: content });
         });
-    },
+    }
     deleteComment(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield comments_repository_1.commentsRepository.deleteCommentById(id);
+            return yield this.commentsRepository.deleteCommentById(id);
         });
-    },
-};
+    }
+}
+exports.CommentsService = CommentsService;
 //# sourceMappingURL=comments-service.js.map

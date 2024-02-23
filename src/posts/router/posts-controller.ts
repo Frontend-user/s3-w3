@@ -1,17 +1,22 @@
 import {Request, Response} from "express";
-import {commentsService} from "../../comments/service/comments-service";
-import {commentQueryRepository} from "../../comments/query-repository/comment-query-repository";
 import {getQueryData} from "../../common/custom-methods/query-data";
 import {HTTP_STATUSES} from "../../common/constants/http-statuses";
 import {PostsQueryRepository} from "../posts-query/posts-query-repository";
 import {BlogViewType} from "../../common/types/blog-type";
-import {blogsQueryRepository,  postsService} from "../../common/composition-root/composition-root";
 import {PostCreateType, PostViewType} from "../../common/types/post-type";
 import {ObjectId} from "mongodb";
 import {PostsService} from "../domain/posts-service";
+import {BlogsQueryRepository} from "../../blogs/blogs-query/blogs-query-repository";
+import {commentQueryRepository, commentsService} from "../../common/composition-root/composition-root";
+import {CommentsService} from "../../comments/service/comments-service";
+import {CommentQueryRepository} from "../../comments/query-repository/comment-query-repository";
 
 export class PostsController {
-    constructor(protected postsQueryRepository:PostsQueryRepository, protected postsService:PostsService) {
+    constructor(protected postsQueryRepository:PostsQueryRepository,
+                protected postsService:PostsService,
+                protected blogsQueryRepository:BlogsQueryRepository,
+                protected commentsService:CommentsService,
+                protected commentQueryRepository:CommentQueryRepository) {
     }
     async createCommentByPostId(req: Request, res: Response) {
         const commentContent: string = req.body.content
@@ -68,7 +73,7 @@ export class PostsController {
 
     async createPost(req: Request, res: Response) {
         let getBlogName
-        const getBlog: BlogViewType | boolean = await blogsQueryRepository.getBlogById(req.body.blogId)
+        const getBlog: BlogViewType | boolean = await this.blogsQueryRepository.getBlogById(req.body.blogId)
         if (getBlog) {
             getBlogName = getBlog.name
             let newPost: PostCreateType = {
