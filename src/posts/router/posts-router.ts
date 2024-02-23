@@ -38,7 +38,7 @@ postsRouter.post('/:postId/comments',
 postsRouter.get('/:postId/comments',
     commentPostIdExistValidation,
     commentInputValidationMiddleware,
-    postsController.createCommentByPostId.bind(postsController))
+    postsController.getCommentByPostId.bind(postsController))
 
 postsRouter.get('/', postsController.getPosts.bind(postsController))
 
@@ -52,4 +52,4 @@ postsRouter.put('/:id', ...postValidators, postsController.updatePost.bind(posts
 
 postsRouter.delete('/:id',
     authorizationMiddleware,
-    postIdValidation, postsController.deletePost.bind(PostsController))
+    postIdValidation, postsController.deletePost.bind(postsController))

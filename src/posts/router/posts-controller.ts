@@ -7,7 +7,6 @@ import {PostCreateType, PostViewType} from "../../common/types/post-type";
 import {ObjectId} from "mongodb";
 import {PostsService} from "../domain/posts-service";
 import {BlogsQueryRepository} from "../../blogs/blogs-query/blogs-query-repository";
-import {commentQueryRepository, commentsService} from "../../common/composition-root/composition-root";
 import {CommentsService} from "../../comments/service/comments-service";
 import {CommentQueryRepository} from "../../comments/query-repository/comment-query-repository";
 
@@ -21,11 +20,11 @@ export class PostsController {
     async createCommentByPostId(req: Request, res: Response) {
         const commentContent: string = req.body.content
         const postId: string = req.params.postId
-        const commentId = await commentsService.createComment(commentContent, postId)
+        const commentId = await this.commentsService.createComment(commentContent, postId)
         if (!commentId) {
             res.sendStatus(404)
         } else {
-            const comment = await commentQueryRepository.getCommentById(commentId)
+            const comment = await this.commentQueryRepository.getCommentById(commentId)
             delete comment.postId
             res.status(201).send(comment)
         }
@@ -37,7 +36,7 @@ export class PostsController {
         const postId: string = req.params.postId
 
         try {
-            const comment = await commentQueryRepository.getCommentsByPostId(postId, sortBy, sortDirection, pageNumber, pageSize)
+            const comment = await this.commentQueryRepository.getCommentsByPostId(postId, sortBy, sortDirection, pageNumber, pageSize)
             res.status(200).send(comment)
 
         } catch (e) {
