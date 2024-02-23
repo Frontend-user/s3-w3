@@ -12,6 +12,11 @@ exports.commentSchema = new mongoose_1.default.Schema({
         userId: { type: String, required: true },
         userLogin: { type: String, required: true }
     },
+    likesInfo: {
+        likesCount: { type: Number, required: true },
+        dislikesCount: { type: Number, required: true },
+        myStatus: { type: String, required: true },
+    },
     createdAt: { type: String, required: true },
     postId: { type: String, required: true }
 });

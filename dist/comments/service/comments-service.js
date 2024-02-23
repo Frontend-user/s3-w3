@@ -24,6 +24,11 @@ class CommentsService {
                     userId: current_user_1.currentUser.userId,
                     userLogin: current_user_1.currentUser.userLogin
                 },
+                likesInfo: {
+                    likesCount: 0,
+                    dislikesCount: 0,
+                    myStatus: 'None'
+                },
                 createdAt: new Date().toISOString()
             };
             const response = yield this.commentsRepository.createComment(newComment);

@@ -14,6 +14,11 @@ export class CommentsService {
                 userId: currentUser.userId,
                 userLogin: currentUser.userLogin
             },
+            likesInfo: {
+                likesCount: 0,
+                dislikesCount: 0,
+                myStatus: 'None'
+            },
             createdAt: new Date().toISOString()
         }
         const response = await this.commentsRepository.createComment(newComment)
