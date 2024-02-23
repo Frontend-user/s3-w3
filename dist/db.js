@@ -17,7 +17,12 @@ const mongodb_1 = require("mongodb");
 const dotenv_1 = __importDefault(require("dotenv"));
 const mongoose_1 = __importDefault(require("mongoose"));
 exports.commentSchema = new mongoose_1.default.Schema({
-    content: { type: String, required: true }
+    content: { type: String, required: true },
+    commentatorInfo: {
+        userId: { type: String, required: true },
+        userLogin: { type: String, required: true }
+    },
+    createdAt: { type: String, required: true }
 });
 exports.tokenSchema = new mongoose_1.default.Schema({
     refreshToken: { type: String, required: true }

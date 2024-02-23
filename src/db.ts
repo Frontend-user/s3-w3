@@ -7,7 +7,12 @@ import {UserCreateType, UserEmailEntityType, UserHashType} from "./users/types/u
 import mongoose from "mongoose";
 
 export const commentSchema = new mongoose.Schema({
-    content: {type: String, required: true}
+    content: {type: String, required: true},
+    commentatorInfo:{
+    userId: {type: String, required: true},
+    userLogin: {type: String, required: true}
+    },
+    createdAt: {type: String, required: true}
 })
 export const tokenSchema = new mongoose.Schema({
     refreshToken: {type: String, required: true}
