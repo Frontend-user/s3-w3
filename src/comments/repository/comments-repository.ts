@@ -36,9 +36,13 @@ export class CommentsRepository {
         if (!findObject && likeStatus !== LIKE_STATUSES.NONE) {
 
             if (likeStatus === LIKE_STATUSES.LIKE) {
-                comment.likesInfo.likesCount = 1
+                let currentLikes = comment.likesInfo.likesCount
+                currentLikes ++
+                comment.likesInfo.likesCount = currentLikes
             } else {
-                comment.likesInfo.dislikesCount = 1
+                let currentDislikes = comment.likesInfo.dislikesCount
+                currentDislikes ++
+                comment.likesInfo.dislikesCount = currentDislikes
             }
             comment.likesInfo.myStatus = likeStatus
             comment.likesInfo.usersLikeStatuses.push(userIdLikeStatus)

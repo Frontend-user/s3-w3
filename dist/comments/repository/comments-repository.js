@@ -41,10 +41,14 @@ class CommentsRepository {
             let findObject = commentLikeStatusesArray.find(o => o.userId === current_user_1.currentUser.userId);
             if (!findObject && likeStatus !== http_statuses_1.LIKE_STATUSES.NONE) {
                 if (likeStatus === http_statuses_1.LIKE_STATUSES.LIKE) {
-                    comment.likesInfo.likesCount = 1;
+                    let currentLikes = comment.likesInfo.likesCount;
+                    currentLikes++;
+                    comment.likesInfo.likesCount = currentLikes;
                 }
                 else {
-                    comment.likesInfo.dislikesCount = 1;
+                    let currentDislikes = comment.likesInfo.dislikesCount;
+                    currentDislikes++;
+                    comment.likesInfo.dislikesCount = currentDislikes;
                 }
                 comment.likesInfo.myStatus = likeStatus;
                 comment.likesInfo.usersLikeStatuses.push(userIdLikeStatus);

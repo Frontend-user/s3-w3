@@ -77,22 +77,50 @@ describe('/CUSTOM', () => {
         console.log(comment.body.likesInfo.usersLikeStatuses, 'comment.body.likesInfo')
         consoleLog('LIKE COMMENT', 'comment', comment.body)
     });
+    let createdUserId2: any
+    let tokens2 = {
+        accessToken: '', refreshToken: ''
+    }
+    let blogId2: any
+    let postId2: any
+
+    // it('LOGOUT', async () => {
+    //     let logoutResponse = await customTestsService.logout(tokens.refreshToken)
+    //     // consoleLog('LOGOUT', 'logoutResponse', logoutResponse)
+    // });
+//     //
+    it('CREATE USER', async () => {
+        createdUserId2 = await customTestsService.createUser(correctSecondUserData)
+        // consoleLog('CREATE USER', 'createdUserId', createdUserId2)
+    });
+    it('LOGIN', async () => {
+        tokens2 = await customTestsService.login({
+            "loginOrEmail": correctSecondUserData.email,
+            "password": correctSecondUserData.password,
+        })
+        // consoleLog('LOGIN', 'tokens2.accessToken', tokens2.accessToken)
+        // consoleLog('LOGIN', 'tokens2.refreshToke', tokens2.refreshToken)
+    });
+    it('LIKE COMMENT', async () => {
+        comment = await customTestsService.likeComment(tokens2.accessToken, commentId, LIKE_STATUSES.LIKE)
+        console.log(comment.body.likesInfo, 'comment.body.likesInfo')
+        consoleLog('LIKE COMMENT', 'comment', comment.body)
+    });
+    it('DISLIKE COMMENT', async () => {
+        comment = await customTestsService.likeComment(tokens2.accessToken, commentId, LIKE_STATUSES.DISLIKE)
+        console.log(comment.body.likesInfo, 'comment.body.likesInfo')
+        consoleLog('DISLIKE COMMENT', 'comment', comment.body)
+    });
 
 
     it('get COMMENT', async () => {
+
         const response: any = await request(app)
             .get(`/comments/${commentId}`)
-            .set('authorization', 'Bearer ' + tokens.accessToken)
+            // .set('authorization', 'Bearer ' + tokens.accessToken)
+            // .send({"likeStatus":'sdfd'})
             .expect(204,{'sdds':'s'})
     });
-// it('get COMMENT', async () => {
-//
-//         const response: any = await request(app)
-//             .get(`/comments/${commentId}`)
-//             // .set('authorization', 'Bearer ' + tokens.accessToken)
-//             // .send({"likeStatus":'sdfd'})
-//             .expect(204,{'sdds':'s'})
-//     });
 
 
 
@@ -180,39 +208,6 @@ describe('/CUSTOM', () => {
 //         consoleLog('LIKE COMMENT', 'comment', comment.body)
 //     });
 //
-//     let createdUserId2: any
-//     let tokens2 = {
-//         accessToken: '', refreshToken: ''
-//     }
-//     let blogId2: any
-//     let postId2: any
-//
-//     it('LOGOUT', async () => {
-//         let logoutResponse = await customTestsService.logout(tokens.refreshToken)
-//         // consoleLog('LOGOUT', 'logoutResponse', logoutResponse)
-//     });
-//     //
-//     it('CREATE USER', async () => {
-//         createdUserId2 = await customTestsService.createUser(correctSecondUserData)
-//         // consoleLog('CREATE USER', 'createdUserId', createdUserId2)
-//     });
-//     it('LOGIN', async () => {
-//         tokens2 = await customTestsService.login({
-//             "loginOrEmail": correctSecondUserData.email,
-//             "password": correctSecondUserData.password,
-//         })
-//         // consoleLog('LOGIN', 'tokens2.accessToken', tokens2.accessToken)
-//         // consoleLog('LOGIN', 'tokens2.refreshToke', tokens2.refreshToken)
-//     });
-//     it('LIKE COMMENT', async () => {
-//         comment = await customTestsService.likeComment(tokens2.accessToken, commentId, LIKE_STATUSES.LIKE)
-//         console.log(comment.body.likesInfo, 'comment.body.likesInfo')
-//         consoleLog('LIKE COMMENT', 'comment', comment.body)
-//     });
-//     it('LIKE COMMENT', async () => {
-//         comment = await customTestsService.likeComment(tokens2.accessToken, commentId, LIKE_STATUSES.LIKE)
-//         console.log(comment.body.likesInfo, 'comment.body.likesInfo')
-//         consoleLog('LIKE COMMENT', 'comment', comment.body)
-//     });
+
 
 })
