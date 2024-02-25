@@ -70,8 +70,8 @@ export const customTestsService = {
         const response: any = await request(app)
             .put(`/comments/${commentId}/like-status`)
             .set('authorization', 'Bearer ' + accessToken)
-            .send({"likeStatus":likeStatus})
-
+            .send({"likeStatus":""})
+            .expect(400, { errorsMessages: [{ message: 'String', field: "likeStatus" }] })
         return response
     },
 

@@ -20,7 +20,6 @@ exports.commentContentValidation = (0, express_validator_1.body)('content').trim
 });
 exports.commentLikeStatusValidation = (0, express_validator_1.body)('likeStatus')
     .trim()
-    .isLength({ min: 4, max: 7 })
     .custom((value) => {
     let correctValues = ["Like", "None", "Dislike"];
     if (!correctValues.find(i => i === value)) {

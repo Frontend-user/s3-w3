@@ -37,9 +37,6 @@ export class PostsController {
 
         try {
             const comment = await this.commentQueryRepository.getCommentsByPostId(postId, sortBy, sortDirection, pageNumber, pageSize,req.headers.authorization)
-            console.log(comment.items,'comemtss')
-            // @ts-ignore
-            console.log(comment.items.likesInfo,'comemtss')
             res.status(200).send(comment)
 
         } catch (e) {

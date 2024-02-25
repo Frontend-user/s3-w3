@@ -13,7 +13,6 @@ export const commentContentValidation = body('content').trim().isLength({min: 20
 })
 export const commentLikeStatusValidation = body('likeStatus')
     .trim()
-    .isLength({min: 4, max: 7})
     .custom((value) => {
     let correctValues = ["Like", "None", "Dislike"]
     if (!correctValues.find(i=>i===value)){

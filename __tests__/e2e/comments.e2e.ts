@@ -102,7 +102,7 @@ describe('/CUSTOM', () => {
         // consoleLog('LOGIN', 'tokens2.refreshToke', tokens2.refreshToken)
     });
     it('LIKE COMMENT', async () => {
-        comment = await customTestsService.likeComment(tokens2.accessToken, commentId, LIKE_STATUSES.LIKE)
+        comment = await customTestsService.likeComment(tokens2.accessToken, commentId, "")
         console.log(comment.body.likesInfo, 'comment.body.likesInfo')
         consoleLog('LIKE COMMENT', 'comment', comment.body)
     });
