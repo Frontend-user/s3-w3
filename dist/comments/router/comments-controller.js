@@ -55,6 +55,7 @@ class CommentsController {
     getCommentById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const comment = yield this.commentQueryRepository.getCommentById(new mongodb_1.ObjectId(req.params.id));
+            console.log(comment, 'comment');
             return comment ? res.send(comment) : res.sendStatus(404);
         });
     }
