@@ -26,23 +26,34 @@ export class CommentQueryRepository {
     }
     async getCommentById(commentId: ObjectId, auth?:string|undefined) {
         const comment = await CommentModel.findOne({_id: commentId}).lean()
-        let userId
+        let accessUserId:undefined | string
         if(auth){
-            userId = await jwtService.checkToken(auth)
+            accessUserId = await jwtService.checkToken(auth)
         }
-        if(userId){
+        if(accessUserId){
             let usersLikeStatuses:any[] | undefined = comment!.likesInfo.usersLikeStatuses
             if(usersLikeStatuses && usersLikeStatuses.length > 0){
-                let info = usersLikeStatuses.find(o=>o.userId ===currentUser.userId)
-                comment!.likesInfo.myStatus = info.likeStatus
+                let info = usersLikeStatuses.find(o=>o.userId === accessUserId)
+                if(info){
+                    comment!.likesInfo.myStatus = info.likeStatus
+                }else {
+                    comment!.likesInfo.myStatus = LIKE_STATUSES.NONE
+                }
             }
         }else {
             comment!.likesInfo.myStatus = LIKE_STATUSES.NONE
-
         }
-        if(comment && currentUser.userId){
+        // else if(currentUser.userId && comment) {
+        //     let usersLikeStatuses:any[] | undefined = comment!.likesInfo.usersLikeStatuses
+        //     let info
+        //     if(usersLikeStatuses && usersLikeStatuses.length > 0){
+        //         info = usersLikeStatuses.find(o=>o.userId ===currentUser.userId)
+        //         comment!.likesInfo.myStatus = info.likeStatus
+        //     }
+        //     comment!.likesInfo.myStatus = info.likeStatus
+        //
+        // }
 
-        }
         return comment ? this.changeCommentFormat(comment) : false
     }
 

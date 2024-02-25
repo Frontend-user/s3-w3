@@ -14,7 +14,6 @@ const db_1 = require("../../db");
 const blogs_sorting_1 = require("../../blogs/blogs-query/utils/blogs-sorting");
 const blogs_paginate_1 = require("../../blogs/blogs-query/utils/blogs-paginate");
 const http_statuses_1 = require("../../common/constants/http-statuses");
-const current_user_1 = require("../../application/current-user");
 const jwt_service_1 = require("../../application/jwt-service");
 class CommentQueryRepository {
     getCommentsByPostId(postId, sortBy, sortDirection, pageNumber, pageSize) {
@@ -37,22 +36,35 @@ class CommentQueryRepository {
     getCommentById(commentId, auth) {
         return __awaiter(this, void 0, void 0, function* () {
             const comment = yield db_1.CommentModel.findOne({ _id: commentId }).lean();
-            let userId;
+            let accessUserId;
             if (auth) {
-                userId = yield jwt_service_1.jwtService.checkToken(auth);
+                accessUserId = yield jwt_service_1.jwtService.checkToken(auth);
             }
-            if (userId) {
+            if (accessUserId) {
                 let usersLikeStatuses = comment.likesInfo.usersLikeStatuses;
                 if (usersLikeStatuses && usersLikeStatuses.length > 0) {
-                    let info = usersLikeStatuses.find(o => o.userId === current_user_1.currentUser.userId);
-                    comment.likesInfo.myStatus = info.likeStatus;
+                    let info = usersLikeStatuses.find(o => o.userId === accessUserId);
+                    if (info) {
+                        comment.likesInfo.myStatus = info.likeStatus;
+                    }
+                    else {
+                        comment.likesInfo.myStatus = http_statuses_1.LIKE_STATUSES.NONE;
+                    }
                 }
             }
             else {
                 comment.likesInfo.myStatus = http_statuses_1.LIKE_STATUSES.NONE;
             }
-            if (comment && current_user_1.currentUser.userId) {
-            }
+            // else if(currentUser.userId && comment) {
+            //     let usersLikeStatuses:any[] | undefined = comment!.likesInfo.usersLikeStatuses
+            //     let info
+            //     if(usersLikeStatuses && usersLikeStatuses.length > 0){
+            //         info = usersLikeStatuses.find(o=>o.userId ===currentUser.userId)
+            //         comment!.likesInfo.myStatus = info.likeStatus
+            //     }
+            //     comment!.likesInfo.myStatus = info.likeStatus
+            //
+            // }
             return comment ? this.changeCommentFormat(comment) : false;
         });
     }
