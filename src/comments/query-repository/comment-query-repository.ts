@@ -25,17 +25,17 @@ export class CommentQueryRepository {
     }
     async getCommentById(commentId: ObjectId) {
         const comment = await CommentModel.findOne({_id: commentId}).lean()
-        if(comment && !currentUser.userId){
+        // if(comment && !currentUser.userId){
             let usersLikeStatuses:any = comment!.likesInfo.usersLikeStatuses
-            comment.likesInfo.myStatus = LIKE_STATUSES.NONE
-        }
-        if(comment && currentUser.userId){
-            let usersLikeStatuses:any[] | undefined = comment!.likesInfo.usersLikeStatuses
-            if(usersLikeStatuses && usersLikeStatuses.length > 0){
-                let info = usersLikeStatuses.find(o=>o.userId ===currentUser.userId)
-                comment.likesInfo.myStatus = info.likeStatus
-            }
-        }
+            comment!.likesInfo.myStatus = LIKE_STATUSES.NONE
+        // }
+        // if(comment && currentUser.userId){
+        //     let usersLikeStatuses:any[] | undefined = comment!.likesInfo.usersLikeStatuses
+        //     if(usersLikeStatuses && usersLikeStatuses.length > 0){
+        //         let info = usersLikeStatuses.find(o=>o.userId ===currentUser.userId)
+        //         comment.likesInfo.myStatus = info.likeStatus
+        //     }
+        // }
         return comment ? this.changeCommentFormat(comment) : false
     }
 
