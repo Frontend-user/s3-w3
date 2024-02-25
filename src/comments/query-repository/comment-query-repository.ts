@@ -4,6 +4,7 @@ import {blogsSorting} from "../../blogs/blogs-query/utils/blogs-sorting";
 import {blogsPaginate} from "../../blogs/blogs-query/utils/blogs-paginate";
 import {LIKE_STATUSES} from "../../common/constants/http-statuses";
 import {currentUser} from "../../application/current-user";
+import {jwtService} from "../../application/jwt-service";
 export class CommentQueryRepository {
     async getCommentsByPostId(postId: string, sortBy?: string, sortDirection?: string, pageNumber?: number, pageSize?: number) {
         const sortQuery = blogsSorting.getSorting(sortBy, sortDirection)
@@ -23,19 +24,25 @@ export class CommentQueryRepository {
         }
 
     }
-    async getCommentById(commentId: ObjectId) {
+    async getCommentById(commentId: ObjectId, auth?:string|undefined) {
         const comment = await CommentModel.findOne({_id: commentId}).lean()
-        // if(comment && !currentUser.userId){
-            let usersLikeStatuses:any = comment!.likesInfo.usersLikeStatuses
+        let userId
+        if(auth){
+            userId = await jwtService.checkToken(auth)
+        }
+        if(userId){
+            let usersLikeStatuses:any[] | undefined = comment!.likesInfo.usersLikeStatuses
+            if(usersLikeStatuses && usersLikeStatuses.length > 0){
+                let info = usersLikeStatuses.find(o=>o.userId ===currentUser.userId)
+                comment!.likesInfo.myStatus = info.likeStatus
+            }
+        }else {
             comment!.likesInfo.myStatus = LIKE_STATUSES.NONE
-        // }
-        // if(comment && currentUser.userId){
-        //     let usersLikeStatuses:any[] | undefined = comment!.likesInfo.usersLikeStatuses
-        //     if(usersLikeStatuses && usersLikeStatuses.length > 0){
-        //         let info = usersLikeStatuses.find(o=>o.userId ===currentUser.userId)
-        //         comment.likesInfo.myStatus = info.likeStatus
-        //     }
-        // }
+
+        }
+        if(comment && currentUser.userId){
+
+        }
         return comment ? this.changeCommentFormat(comment) : false
     }
 

@@ -15,6 +15,7 @@ const blogs_sorting_1 = require("../../blogs/blogs-query/utils/blogs-sorting");
 const blogs_paginate_1 = require("../../blogs/blogs-query/utils/blogs-paginate");
 const http_statuses_1 = require("../../common/constants/http-statuses");
 const current_user_1 = require("../../application/current-user");
+const jwt_service_1 = require("../../application/jwt-service");
 class CommentQueryRepository {
     getCommentsByPostId(postId, sortBy, sortDirection, pageNumber, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -33,19 +34,24 @@ class CommentQueryRepository {
             };
         });
     }
-    getCommentById(commentId) {
+    getCommentById(commentId, auth) {
         return __awaiter(this, void 0, void 0, function* () {
             const comment = yield db_1.CommentModel.findOne({ _id: commentId }).lean();
-            if (comment && !current_user_1.currentUser.userId) {
-                let usersLikeStatuses = comment.likesInfo.usersLikeStatuses;
-                comment.likesInfo.myStatus = http_statuses_1.LIKE_STATUSES.NONE;
+            let userId;
+            if (auth) {
+                userId = yield jwt_service_1.jwtService.checkToken(auth);
             }
-            if (comment && current_user_1.currentUser.userId) {
+            if (userId) {
                 let usersLikeStatuses = comment.likesInfo.usersLikeStatuses;
                 if (usersLikeStatuses && usersLikeStatuses.length > 0) {
                     let info = usersLikeStatuses.find(o => o.userId === current_user_1.currentUser.userId);
                     comment.likesInfo.myStatus = info.likeStatus;
                 }
+            }
+            else {
+                comment.likesInfo.myStatus = http_statuses_1.LIKE_STATUSES.NONE;
+            }
+            if (comment && current_user_1.currentUser.userId) {
             }
             return comment ? this.changeCommentFormat(comment) : false;
         });

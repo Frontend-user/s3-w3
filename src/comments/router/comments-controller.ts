@@ -36,7 +36,7 @@ export class CommentsController {
         }
     }
     async getCommentById(req: Request, res: Response) {
-        const comment = await this.commentQueryRepository.getCommentById(new ObjectId(req.params.id))
+        const comment = await this.commentQueryRepository.getCommentById(new ObjectId(req.params.id), req.headers.authorization)
         console.log(comment,'comment')
         return comment ? res.send(comment) : res.sendStatus(404)
     }
