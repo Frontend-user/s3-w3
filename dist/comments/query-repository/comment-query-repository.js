@@ -38,7 +38,7 @@ class CommentQueryRepository {
             const comment = yield db_1.CommentModel.findOne({ _id: commentId }).lean();
             let accessUserId;
             if (auth) {
-                accessUserId = yield jwt_service_1.jwtService.checkToken(auth);
+                accessUserId = yield jwt_service_1.jwtService.checkToken(auth.split(' ')[1]);
             }
             if (accessUserId) {
                 let usersLikeStatuses = comment.likesInfo.usersLikeStatuses;

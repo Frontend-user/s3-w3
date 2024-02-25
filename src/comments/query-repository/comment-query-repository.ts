@@ -28,7 +28,7 @@ export class CommentQueryRepository {
         const comment = await CommentModel.findOne({_id: commentId}).lean()
         let accessUserId:undefined | string
         if(auth){
-            accessUserId = await jwtService.checkToken(auth)
+            accessUserId = await jwtService.checkToken(auth.split(' ')[1])
         }
         if(accessUserId){
             let usersLikeStatuses:any[] | undefined = comment!.likesInfo.usersLikeStatuses

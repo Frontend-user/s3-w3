@@ -78,6 +78,13 @@ describe('/CUSTOM', () => {
         consoleLog('LIKE COMMENT', 'comment', comment.body)
     });
 
+
+    it('get COMMENT', async () => {
+        const response: any = await request(app)
+            .get(`/comments/${commentId}`)
+            .set('authorization', 'Bearer ' + tokens.accessToken)
+            .expect(204,{'sdds':'s'})
+    });
 // it('get COMMENT', async () => {
 //
 //         const response: any = await request(app)
@@ -89,19 +96,19 @@ describe('/CUSTOM', () => {
 
 
 
-    it('get COMMENT', async () => {
-
-        const response: any = await request(app)
-            .get(`/comments/${commentId}`)
-            // .set('authorization', 'Bearer ' + tokens.accessToken)
-            // .send({"likeStatus":'sdfd'})
-            .expect(204,{'sdds':'s'})
-    });
-
-    it('LOGOUT', async () => {
-        let logoutResponse = await customTestsService.logout(tokens.refreshToken)
-        // consoleLog('LOGOUT', 'logoutResponse', logoutResponse)
-    });
+    // it('get COMMENT', async () => {
+    //
+    //     const response: any = await request(app)
+    //         .get(`/comments/${commentId}`)
+    //         .set('authorization', 'Bearer ' + tokens.accessToken)
+    //         .send({"likeStatus":'sdfd'})
+    //         .expect(204,{'sdds':'s'})
+    // });
+    //
+    // it('LOGOUT', async () => {
+    //     let logoutResponse = await customTestsService.logout(tokens.refreshToken)
+    //     consoleLog('LOGOUT', 'logoutResponse', logoutResponse)
+    // });
     //
     //
     //
