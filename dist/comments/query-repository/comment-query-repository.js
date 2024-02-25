@@ -16,26 +16,39 @@ const blogs_paginate_1 = require("../../blogs/blogs-query/utils/blogs-paginate")
 const http_statuses_1 = require("../../common/constants/http-statuses");
 const jwt_service_1 = require("../../application/jwt-service");
 class CommentQueryRepository {
-    getCommentsByPostId(postId, sortBy, sortDirection, pageNumber, pageSize) {
+    getCommentsByPostId(postId, sortBy, sortDirection, pageNumber, pageSize, auth) {
         return __awaiter(this, void 0, void 0, function* () {
             const sortQuery = blogs_sorting_1.blogsSorting.getSorting(sortBy, sortDirection);
             const { skip, limit, newPageNumber, newPageSize } = blogs_paginate_1.blogsPaginate.getPagination(pageNumber, pageSize);
             const comments = yield db_1.CommentModel.find({ postId: postId }).sort(sortQuery).skip(skip).limit(limit).lean();
             const allComments = yield db_1.CommentModel.find({ postId: postId }).sort(sortQuery).lean();
             let pagesCount = Math.ceil(allComments.length / newPageSize);
-            const fixArrayIds = comments.map((item => this.changeCommentFormat(item)));
+            // let getRightLikeStatuses =  comments.map((item=> await this.getCommentById(undefined,auth, item)))
+            let getRightLikeStatuses = [];
+            for (let i = 0; i < comments.length; i++) {
+                let s = yield this.getCommentById(undefined, auth, comments[i]);
+                getRightLikeStatuses.push(s);
+            }
+            // const fixArrayIds = getRightLikeStatuses.map((item => this.changeCommentFormat(item)))
             return {
                 "pagesCount": pagesCount,
                 "page": newPageNumber,
                 "pageSize": newPageSize,
                 "totalCount": allComments.length,
-                "items": fixArrayIds
+                "items": getRightLikeStatuses
             };
         });
     }
-    getCommentById(commentId, auth) {
+    getCommentById(commentId, auth, getComment) {
         return __awaiter(this, void 0, void 0, function* () {
-            const comment = yield db_1.CommentModel.findOne({ _id: commentId }).lean();
+            let comment;
+            if (!getComment && commentId) {
+                comment = yield db_1.CommentModel.findOne({ _id: commentId }).lean();
+            }
+            else {
+                comment = getComment;
+            }
+            // comment = await CommentModel.findOne({_id: commentId}).lean()
             let accessUserId;
             if (auth) {
                 accessUserId = yield jwt_service_1.jwtService.checkToken(auth.split(' ')[1]);
@@ -65,6 +78,7 @@ class CommentQueryRepository {
             //     comment!.likesInfo.myStatus = info.likeStatus
             //
             // }
+            console.log(comment, '1');
             return comment ? this.changeCommentFormat(comment) : false;
         });
     }

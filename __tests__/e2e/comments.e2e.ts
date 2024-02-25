@@ -122,7 +122,14 @@ describe('/CUSTOM', () => {
             .expect(204,{'sdds':'s'})
     });
 
+    it('get COMMENT', async () => {
 
+        const response: any = await request(app)
+            .get(`/posts/${postId}/comments`)
+            .set('authorization', 'Bearer ' + tokens.accessToken)
+            // .send({"likeStatus":'sdfd'})
+            .expect(204,{'sdds':'s'})
+    });
 
     // it('get COMMENT', async () => {
     //

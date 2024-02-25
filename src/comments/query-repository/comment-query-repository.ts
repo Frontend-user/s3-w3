@@ -6,26 +6,39 @@ import {LIKE_STATUSES} from "../../common/constants/http-statuses";
 import {currentUser} from "../../application/current-user";
 import {jwtService} from "../../application/jwt-service";
 export class CommentQueryRepository {
-    async getCommentsByPostId(postId: string, sortBy?: string, sortDirection?: string, pageNumber?: number, pageSize?: number) {
+    async getCommentsByPostId(postId: string, sortBy?: string, sortDirection?: string, pageNumber?: number, pageSize?: number,auth?:string|undefined ) {
+
         const sortQuery = blogsSorting.getSorting(sortBy, sortDirection)
         const {skip, limit, newPageNumber, newPageSize} = blogsPaginate.getPagination(pageNumber, pageSize)
         const comments = await CommentModel.find({postId: postId}).sort(sortQuery).skip(skip).limit(limit).lean()
         const allComments = await CommentModel.find({postId: postId}).sort(sortQuery).lean()
 
         let pagesCount = Math.ceil(allComments.length / newPageSize)
-        const fixArrayIds = comments.map((item => this.changeCommentFormat(item)))
+        // let getRightLikeStatuses =  comments.map((item=> await this.getCommentById(undefined,auth, item)))
+        let getRightLikeStatuses:any =[]
+        for(let i =0; i <comments.length; i++){
+          let s =   await this.getCommentById(undefined,auth, comments[i])
+            getRightLikeStatuses.push(s)
+        }
+        // const fixArrayIds = getRightLikeStatuses.map((item => this.changeCommentFormat(item)))
 
         return {
             "pagesCount": pagesCount,
             "page": newPageNumber,
             "pageSize": newPageSize,
             "totalCount": allComments.length,
-            "items": fixArrayIds
+            "items": getRightLikeStatuses
         }
 
     }
-    async getCommentById(commentId: ObjectId, auth?:string|undefined) {
-        const comment = await CommentModel.findOne({_id: commentId}).lean()
+    async getCommentById(commentId: ObjectId|undefined, auth?:string|undefined, getComment?:any) {
+        let comment:any
+        if(!getComment && commentId){
+            comment = await CommentModel.findOne({_id: commentId}).lean()
+        }else {
+            comment = getComment
+        }
+         // comment = await CommentModel.findOne({_id: commentId}).lean()
         let accessUserId:undefined | string
         if(auth){
             accessUserId = await jwtService.checkToken(auth.split(' ')[1])
@@ -53,7 +66,7 @@ export class CommentQueryRepository {
         //     comment!.likesInfo.myStatus = info.likeStatus
         //
         // }
-
+        console.log(comment,'1')
         return comment ? this.changeCommentFormat(comment) : false
     }
 
