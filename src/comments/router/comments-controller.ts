@@ -16,6 +16,17 @@ export class CommentsController {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
         }
     }
+    async updateCommentLikeStatus(req: Request, res: Response){
+        try {
+            const response: boolean = await this.commentsService.updateCommentLikeStatus(new ObjectId(req.params.commentId), req.body.likeStatus)
+            let comment = await this.commentQueryRepository.getCommentById(new ObjectId(req.params.commentId))
+            // res.send(comment)
+            res.sendStatus(response ? HTTP_STATUSES.NO_CONTENT_204 : HTTP_STATUSES.NOT_FOUND_404)
+
+        } catch (error) {
+            res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+        }
+    }
     async deleteCommentById(req: Request, res: Response) {
         try {
             const response: boolean = await this.commentsService.deleteComment(new ObjectId(req.params.commentId))

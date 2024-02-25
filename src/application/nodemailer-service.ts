@@ -29,7 +29,6 @@ export const nodemailerService = {
 
     },
     async sendRecoveryCode(recoveryCode: string, emailToSend: string) {
-        console.log('sendRecoveryCode')
         try {
             const transporter = await nodemailer.createTransport({
                 service: 'gmail',

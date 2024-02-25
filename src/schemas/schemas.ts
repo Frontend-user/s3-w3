@@ -5,16 +5,18 @@ import {BlogEntityType} from "../common/types/blog-type";
 import {UserEmailEntityType} from "../users/types/user-types";
 import {RecoveryCodeType} from "../common/types/recovery-type";
 
+export type usersIdsLikeStatuses = { userId: String, likeStatus: String }
 export const commentSchema = new mongoose.Schema({
     content: {type: String, required: true},
-    commentatorInfo:{
+    commentatorInfo: {
         userId: {type: String, required: true},
         userLogin: {type: String, required: true}
     },
     likesInfo: {
-        likesCount:{ type: Number, required: true},
-        dislikesCount:{ type: Number, required: true},
+        likesCount: {type: Number, required: true},
+        dislikesCount: {type: Number, required: true},
         myStatus: {type: String, required: true},
+        usersLikeStatuses: {type: Array<usersIdsLikeStatuses>, required: false}
     },
     createdAt: {type: String, required: true},
     postId: {type: String, required: true}
@@ -64,5 +66,5 @@ export const deviceSchema = new mongoose.Schema({
     ip: {type: String, required: true},
     title: {type: String, required: true},
     lastActiveDate: {type: String, required: true},
-    deviceId:   {type: String, required: true},
+    deviceId: {type: String, required: true},
 });

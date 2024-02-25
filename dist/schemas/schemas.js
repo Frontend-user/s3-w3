@@ -16,6 +16,7 @@ exports.commentSchema = new mongoose_1.default.Schema({
         likesCount: { type: Number, required: true },
         dislikesCount: { type: Number, required: true },
         myStatus: { type: String, required: true },
+        usersLikeStatuses: { type: (Array), required: false }
     },
     createdAt: { type: String, required: true },
     postId: { type: String, required: true }

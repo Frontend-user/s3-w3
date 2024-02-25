@@ -46,7 +46,7 @@ exports.isUnValidTokenMiddleware = (0, express_validator_1.cookie)('refreshToken
 exports.refreshTokenValidator = (0, express_validator_1.cookie)('refreshToken').custom((value, { req }) => __awaiter(void 0, void 0, void 0, function* () {
     const refreshToken = value;
     const isExpired = yield jwt_service_1.jwtService.checkRefreshToken(refreshToken);
-    if (isExpired && refreshToken || refreshToken === '2001') {
+    if (isExpired && refreshToken) {
         return true;
     }
     else {
@@ -194,7 +194,6 @@ const newPasswordRecoveryRestrictionValidator = (req, res, next) => {
 exports.newPasswordRecoveryRestrictionValidator = newPasswordRecoveryRestrictionValidator;
 const recoveryValidationMiddleware = (req, res, next) => {
     const errors = (0, express_validator_1.validationResult)(req).array({ onlyFirstError: true });
-    console.log(errors, 'errros');
     if (errors.length) {
         let errorsForClient = [];
         for (const error of errors) {

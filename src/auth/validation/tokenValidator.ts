@@ -41,7 +41,7 @@ export const isUnValidTokenMiddleware = cookie('refreshToken').custom(async (val
 export const refreshTokenValidator = cookie('refreshToken').custom(async (value, {req}) => {
     const refreshToken = value
     const isExpired = await jwtService.checkRefreshToken(refreshToken)
-    if (isExpired && refreshToken || refreshToken === '2001') {
+    if (isExpired && refreshToken) {
         return true
     } else {
         throw new Error('Wrong refreshToken');
@@ -195,7 +195,6 @@ export const newPasswordRecoveryRestrictionValidator = (req: Request, res: Respo
 
 export const recoveryValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req).array({onlyFirstError:true})
-    console.log(errors,'errros')
     if (errors.length) {
         let errorsForClient:ErrorType[] = []
         for (const error of errors) {

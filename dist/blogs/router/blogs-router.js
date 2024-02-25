@@ -16,7 +16,7 @@ exports.blogsPostBindValidators = [
     blogs_posts_bind_validation_1.blogsPostsBindingInputValidationMiddleware
 ];
 const blogValidators = [
-    auth_validation_1.authorizationMiddleware,
+    auth_validation_1.bearerAndAdminAuthMiddleware,
     blogs_validation_1.blogDescValidation,
     blogs_validation_1.blogNameValidation,
     blogs_validation_1.blogWebUrlValidation,

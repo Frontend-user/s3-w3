@@ -27,7 +27,8 @@ class CommentsService {
                 likesInfo: {
                     likesCount: 0,
                     dislikesCount: 0,
-                    myStatus: 'None'
+                    myStatus: 'None',
+                    usersLikeStatuses: []
                 },
                 createdAt: new Date().toISOString()
             };
@@ -38,6 +39,11 @@ class CommentsService {
     updateComment(id, content) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.commentsRepository.updateComment(id, { content: content });
+        });
+    }
+    updateCommentLikeStatus(id, likeStatus) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.commentsRepository.updateCommentLikeStatus(id, likeStatus);
         });
     }
     deleteComment(id) {

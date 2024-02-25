@@ -11,8 +11,22 @@ export const commentContentValidation = body('content').trim().isLength({min: 20
     message: 'content is wrong',
     field: 'content'
 })
-
-export const  commentIdExistValidation = param('commentId').custom(async (value, {req}) => {
+export const commentLikeStatusValidation = body('likeStatus')
+    .trim()
+    .isLength({min: 4, max: 7})
+    .custom((value) => {
+    let correctValues = ["Like", "None", "Dislike"]
+    if (!correctValues.find(i=>i===value)){
+       throw new Error('likeStatus is wrong')
+    }else {
+        return true
+    }
+})
+    .withMessage({
+    message: 'likeStatus is wrong',
+    field: 'likeStatus'
+})
+export const commentIdExistValidation = param('commentId').custom(async (value, {req}) => {
     const isExistCommentId: CommentEntity | boolean = await commentQueryRepository.getCommentById(new ObjectId(value))
     if (isExistCommentId) {
         return true
@@ -23,7 +37,7 @@ export const  commentIdExistValidation = param('commentId').custom(async (value,
     message: 'Wrong commentId',
     field: 'commentId'
 })
-export const  IdExistValidation = param('id').custom(async (value, {req}) => {
+export const IdExistValidation = param('id').custom(async (value, {req}) => {
     const isExistId: CommentEntity | boolean = await commentQueryRepository.getCommentById(new ObjectId(value))
 
     if (isExistId) {
@@ -36,7 +50,7 @@ export const  IdExistValidation = param('id').custom(async (value, {req}) => {
     field: 'id'
 })
 export const commentPostIdExistValidation = param('postId').custom(async (value, {req}) => {
-    const isExistPostId: PostViewType | boolean = await postsQueryRepository.getPostById( value)
+    const isExistPostId: PostViewType | boolean = await postsQueryRepository.getPostById(value)
     if (isExistPostId) {
         return true
     } else {
@@ -46,30 +60,30 @@ export const commentPostIdExistValidation = param('postId').custom(async (value,
     message: 'Wrong postId',
     field: 'postId'
 })
-export const haveAccesForUpdate =  param('commentId').custom(async (value, {req}) => {
+export const haveAccesForUpdate = param('commentId').custom(async (value, {req}) => {
     const comment: any | boolean = await commentQueryRepository.getCommentById(new ObjectId(value))
-        if (currentUser.userLogin === comment.commentatorInfo.userLogin && currentUser.userId === comment.commentatorInfo.userId ) {
-                return true
-        } else {
-            throw new Error('No access');
-        }
-    }).withMessage({
-        message: 'No access',
-        field: 'No access'
-    })
+    if (currentUser.userLogin === comment.commentatorInfo.userLogin && currentUser.userId === comment.commentatorInfo.userId) {
+        return true
+    } else {
+        throw new Error('No access');
+    }
+}).withMessage({
+    message: 'No access',
+    field: 'No access'
+})
 export const commentInputValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {
-    const errors = validationResult(req).array({onlyFirstError:true})
+    const errors = validationResult(req).array({onlyFirstError: true})
     if (errors.length) {
-        let errorsForClient:ErrorType[] = []
+        let errorsForClient: ErrorType[] = []
         for (const error of errors) {
             errorsForClient.push(error.msg)
-            if(error.msg.field=== 'commentId' || error.msg.field=== 'postId'  ){
+            if (error.msg.field === 'commentId' || error.msg.field === 'postId') {
                 res.sendStatus(404)
                 return;
             }
-            if(error.msg.field=== 'No access'){
-            res.sendStatus(403)
-            return;
+            if (error.msg.field === 'No access') {
+                res.sendStatus(403)
+                return;
             }
         }
 
@@ -81,16 +95,16 @@ export const commentInputValidationMiddleware = (req: Request, res: Response, ne
 }
 
 export const commentDeleteInputValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {
-    const errors = validationResult(req).array({onlyFirstError:true})
+    const errors = validationResult(req).array({onlyFirstError: true})
     if (errors.length) {
-        let errorsForClient:ErrorType[] = []
+        let errorsForClient: ErrorType[] = []
         for (const error of errors) {
             errorsForClient.push(error.msg)
-            if(error.msg.field=== 'commentId' || error.msg.field=== 'postId'  ){
+            if (error.msg.field === 'commentId' || error.msg.field === 'postId') {
                 res.sendStatus(404)
                 return;
             }
-            if(error.msg.field=== 'No access'){
+            if (error.msg.field === 'No access') {
                 res.sendStatus(403)
                 return;
             }

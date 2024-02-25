@@ -19,7 +19,6 @@ export const jwtService = {
         try {
             const result: any = await jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
             let isFindUser = await usersQueryRepository.getUserById(new ObjectId(result.userId))
-
             return isFindUser ? result.userId : false
         } catch (error) {
             return

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.commentDeleteInputValidationMiddleware = exports.commentInputValidationMiddleware = exports.haveAccesForUpdate = exports.commentPostIdExistValidation = exports.IdExistValidation = exports.commentIdExistValidation = exports.commentContentValidation = void 0;
+exports.commentDeleteInputValidationMiddleware = exports.commentInputValidationMiddleware = exports.haveAccesForUpdate = exports.commentPostIdExistValidation = exports.IdExistValidation = exports.commentIdExistValidation = exports.commentLikeStatusValidation = exports.commentContentValidation = void 0;
 const express_validator_1 = require("express-validator");
 const mongodb_1 = require("mongodb");
 const current_user_1 = require("../../application/current-user");
@@ -17,6 +17,22 @@ const composition_root_1 = require("../../common/composition-root/composition-ro
 exports.commentContentValidation = (0, express_validator_1.body)('content').trim().isLength({ min: 20, max: 300 }).withMessage({
     message: 'content is wrong',
     field: 'content'
+});
+exports.commentLikeStatusValidation = (0, express_validator_1.body)('likeStatus')
+    .trim()
+    .isLength({ min: 4, max: 7 })
+    .custom((value) => {
+    let correctValues = ["Like", "None", "Dislike"];
+    if (!correctValues.find(i => i === value)) {
+        throw new Error('likeStatus is wrong');
+    }
+    else {
+        return true;
+    }
+})
+    .withMessage({
+    message: 'likeStatus is wrong',
+    field: 'likeStatus'
 });
 exports.commentIdExistValidation = (0, express_validator_1.param)('commentId').custom((value, { req }) => __awaiter(void 0, void 0, void 0, function* () {
     const isExistCommentId = yield composition_root_1.commentQueryRepository.getCommentById(new mongodb_1.ObjectId(value));

@@ -8,7 +8,7 @@ const blogs_validation_1 = require("../../validation/blogs-validation");
 const comments_validation_1 = require("../../comments/validation/comments-validation");
 const composition_root_1 = require("../../common/composition-root/composition-root");
 exports.postValidators = [
-    auth_validation_1.authorizationMiddleware,
+    auth_validation_1.bearerAndAdminAuthMiddleware,
     posts_validation_1.postTitleValidation,
     posts_validation_1.postDescValidation,
     posts_validation_1.postContentValidation,

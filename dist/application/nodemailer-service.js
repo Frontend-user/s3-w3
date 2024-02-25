@@ -43,7 +43,6 @@ exports.nodemailerService = {
     },
     sendRecoveryCode(recoveryCode, emailToSend) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log('sendRecoveryCode');
             try {
                 const transporter = yield nodemailer.createTransport({
                     service: 'gmail',

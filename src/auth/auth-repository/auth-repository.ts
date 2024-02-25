@@ -31,7 +31,8 @@ export const authRepositories = {
         return false
     },
     async addUnValidRefreshToken(refreshToken: string) {
-        return await TokenModel.create(refreshToken)
+        let resp = await TokenModel.create({refreshToken})
+        return resp
     },
 
     async getUnValidRefreshTokens() {

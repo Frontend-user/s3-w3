@@ -1,3 +1,6 @@
+import {ObjectId} from "mongodb";
+import {usersIdsLikeStatuses} from "../../schemas/schemas";
+
 export type CommentEntity = {
     _id: string
     content: string
@@ -10,12 +13,8 @@ export type CommentEntity = {
         likesCount: number,
         dislikesCount: number,
         myStatus: string
+        usersLikeStatuses?: usersIdsLikeStatuses[]
     },
     createdAt: string
-}
-export enum Color {
-    None = 'None',
-    Like = 'Like',
-    Dislike = 'Dislike',
 }
 export type CommentCreateType = Omit<CommentEntity, '_id'>

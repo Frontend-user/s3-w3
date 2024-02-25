@@ -80,12 +80,13 @@ exports.authRouter.post('/logout', tokenValidator_1.refreshTokenValidator, token
     const deviceId = tokenData ? tokenData.deviceId : '0';
     yield security_repository_1.securityRepositories.deleteDeviceById(deviceId);
     yield auth_repository_1.authRepositories.addUnValidRefreshToken(getRefreshToken);
+    current_user_1.currentUser.userId = '';
+    current_user_1.currentUser.userLogin = '';
     res.sendStatus(204);
 }));
 exports.authRouter.post('/refresh-token', tokenValidator_1.refreshTokenValidator, tokenValidator_1.isUnValidTokenMiddleware, tokenValidator_1.tokenValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const getRefreshToken = req.cookies.refreshToken;
     const userId = yield jwt_service_1.jwtService.checkRefreshToken(getRefreshToken);
-    console.log(userId, 'USERID ');
     if (!userId) {
         res.sendStatus(http_statuses_1.HTTP_STATUSES.NOT_AUTH_401);
         return;
@@ -119,6 +120,8 @@ exports.authRouter.post('/login', tokenValidator_1.customRestrictionValidator, (
         const createdDeviceId = (0, uuid_1.v4)();
         const user = yield auth_repository_1.authRepositories.getUserIdByAutData(authData);
         if (user) {
+            current_user_1.currentUser.userId = user._id;
+            current_user_1.currentUser.userLogin = user.accountData.login;
             const token = yield jwt_service_1.jwtService.createJWT(user._id);
             const refreshToken = yield jwt_service_1.jwtService.createRefreshToken(user._id, createdDeviceId);
             const dataToken = yield jwt_service_1.jwtService.getRefreshToken(refreshToken);
@@ -129,7 +132,6 @@ exports.authRouter.post('/login', tokenValidator_1.customRestrictionValidator, (
                 lastActiveDate: new Date(dataToken.iat).toISOString(),
                 deviceId: createdDeviceId
             });
-            console.log(req.ip, 'req.ip');
             res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true });
             res.send({ accessToken: token });
         }

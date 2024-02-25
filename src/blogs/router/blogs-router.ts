@@ -5,7 +5,7 @@ import {
     blogNameValidation,
     blogWebUrlValidation, blogWebUrlValidation2, inputValidationMiddleware
 } from "../../validation/blogs-validation";
-import {authorizationMiddleware} from "../../validation/auth-validation";
+import {authorizationMiddleware, bearerAndAdminAuthMiddleware} from "../../validation/auth-validation";
 import { Router} from "express";
 import {
     blogsPostsBindingInputValidationMiddleware,
@@ -21,7 +21,7 @@ export const blogsPostBindValidators = [
     blogsPostsBindingInputValidationMiddleware
 ]
 const blogValidators = [
-    authorizationMiddleware,
+    bearerAndAdminAuthMiddleware,
     blogDescValidation,
     blogNameValidation,
     blogWebUrlValidation,

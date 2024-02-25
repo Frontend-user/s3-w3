@@ -44,7 +44,8 @@ exports.authRepositories = {
     },
     addUnValidRefreshToken(refreshToken) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield db_1.TokenModel.create(refreshToken);
+            let resp = yield db_1.TokenModel.create({ refreshToken });
+            return resp;
         });
     },
     getUnValidRefreshTokens() {

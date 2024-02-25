@@ -17,7 +17,8 @@ export class CommentsService {
             likesInfo: {
                 likesCount: 0,
                 dislikesCount: 0,
-                myStatus: 'None'
+                myStatus: 'None',
+                usersLikeStatuses:[]
             },
             createdAt: new Date().toISOString()
         }
@@ -27,6 +28,9 @@ export class CommentsService {
 
     async updateComment(id: ObjectId, content: string): Promise<boolean> {
         return await this.commentsRepository.updateComment(id, {content: content})
+    }
+    async updateCommentLikeStatus(id: ObjectId, likeStatus: string): Promise<boolean> {
+        return await this.commentsRepository.updateCommentLikeStatus(id, likeStatus)
     }
     async deleteComment(id: ObjectId): Promise<boolean > {
         return await this.commentsRepository.deleteCommentById(id)

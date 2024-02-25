@@ -1,5 +1,9 @@
 import {Router} from "express";
-import {authorizationMiddleware, bearerAuthMiddleware} from "../../validation/auth-validation";
+import {
+    authorizationMiddleware,
+    bearerAndAdminAuthMiddleware,
+    bearerAuthMiddleware
+} from "../../validation/auth-validation";
 import {
     postBlogIdExistValidation,
     postBlogIdValidation,
@@ -17,7 +21,7 @@ import {PostsController} from "./posts-controller";
 import {postsController} from "../../common/composition-root/composition-root";
 
 export const postValidators = [
-    authorizationMiddleware,
+    bearerAndAdminAuthMiddleware,
     postTitleValidation,
     postDescValidation,
     postContentValidation,

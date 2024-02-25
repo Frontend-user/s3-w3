@@ -52,7 +52,6 @@ import {body} from "express-validator";
 
 export const authRouter = Router({})
 
-
 authRouter.get('/me',
     authorizationTokenMiddleware,
     tokenValidationMiddleware,
@@ -66,6 +65,7 @@ authRouter.get('/me',
             return
         }
         if (getUserByID) {
+
             currentUser.userLogin = getUserByID.login
             currentUser.userId = userId
             res.send({
@@ -105,6 +105,8 @@ authRouter.post('/logout',
         const deviceId = tokenData ? tokenData.deviceId : '0'
         await securityRepositories.deleteDeviceById(deviceId)
         await authRepositories.addUnValidRefreshToken(getRefreshToken)
+        currentUser.userId = ''
+        currentUser.userLogin = ''
         res.sendStatus(204)
     }
 )
@@ -115,7 +117,6 @@ authRouter.post('/refresh-token',
     async (req: Request, res: Response) => {
         const getRefreshToken = req.cookies.refreshToken
         const userId = await jwtService.checkRefreshToken(getRefreshToken)
-        console.log(userId, 'USERID ')
         if (!userId) {
             res.sendStatus(HTTP_STATUSES.NOT_AUTH_401)
             return
@@ -156,7 +157,8 @@ authRouter.post('/login',
             const createdDeviceId = uuidv4()
             const user = await authRepositories.getUserIdByAutData(authData)
             if (user) {
-
+                currentUser.userId = user._id
+                currentUser.userLogin = user.accountData.login
                 const token = await jwtService.createJWT(user._id)
                 const refreshToken = await jwtService.createRefreshToken(user._id, createdDeviceId)
                 const dataToken = await jwtService.getRefreshToken(refreshToken)
@@ -168,7 +170,6 @@ authRouter.post('/login',
                         deviceId: createdDeviceId
                     }
                 )
-                console.log(req.ip, 'req.ip')
                 res.cookie('refreshToken', refreshToken, {httpOnly: true, secure: true})
                 res.send({accessToken: token})
 

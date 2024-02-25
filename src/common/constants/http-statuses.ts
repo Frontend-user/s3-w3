@@ -7,3 +7,8 @@ export const HTTP_STATUSES = {
     NOT_AUTH_401: 401,
     SOMETHING_WRONG_400: 400
 }
+export const LIKE_STATUSES = {
+    LIKE: 'Like',
+    DISLIKE: 'Dislike',
+    NONE: 'None',
+}

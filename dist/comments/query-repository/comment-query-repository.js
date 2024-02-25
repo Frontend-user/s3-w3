@@ -40,6 +40,7 @@ class CommentQueryRepository {
     changeCommentFormat(obj) {
         obj.id = obj._id;
         delete obj._id;
+        delete obj.likesInfo.usersLikeStatuses;
         delete obj.__v;
         delete obj.postId;
         return obj;

@@ -28,6 +28,19 @@ class CommentsController {
             }
         });
     }
+    updateCommentLikeStatus(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const response = yield this.commentsService.updateCommentLikeStatus(new mongodb_1.ObjectId(req.params.commentId), req.body.likeStatus);
+                let comment = yield this.commentQueryRepository.getCommentById(new mongodb_1.ObjectId(req.params.commentId));
+                // res.send(comment)
+                res.sendStatus(response ? http_statuses_1.HTTP_STATUSES.NO_CONTENT_204 : http_statuses_1.HTTP_STATUSES.NOT_FOUND_404);
+            }
+            catch (error) {
+                res.sendStatus(http_statuses_1.HTTP_STATUSES.NOT_FOUND_404);
+            }
+        });
+    }
     deleteCommentById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {

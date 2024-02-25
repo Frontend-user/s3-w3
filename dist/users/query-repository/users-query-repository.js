@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.usersQueryRepository = void 0;
 const blogs_paginate_1 = require("../../blogs/blogs-query/utils/blogs-paginate");
 const db_1 = require("../../db");
-const mongodb_1 = require("mongodb");
 exports.usersQueryRepository = {
     getUsers(searchLoginTerm, searchEmailTerm, sortBy, sortDirection, pageNumber, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -34,9 +33,7 @@ exports.usersQueryRepository = {
     },
     getUserById(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(new mongodb_1.ObjectId(userId), 'userId');
             const getUser = yield db_1.UserModel.findOne({ _id: userId }).lean();
-            console.log(getUser, 'GETUSER');
             return getUser ? this.__changeUserFormat(getUser) : false;
         });
     },
