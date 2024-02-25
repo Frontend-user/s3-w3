@@ -1,5 +1,5 @@
 const nodemailer = require("nodemailer");
-export const nodemailerService = {
+export class NodemailerService  {
     async send(confirmationCode: string, emailToSend: string) {
         try {
             const transporter = await nodemailer.createTransport({
@@ -27,7 +27,7 @@ export const nodemailerService = {
             return false
         }
 
-    },
+    }
     async sendRecoveryCode(recoveryCode: string, emailToSend: string) {
         try {
             const transporter = await nodemailer.createTransport({

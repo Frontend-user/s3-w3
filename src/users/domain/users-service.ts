@@ -1,16 +1,17 @@
 import {ObjectId} from "mongodb";
-import {usersRepositories} from "../repository/users-repository";
-import {UserCreateType, UserEmailEntityType, UserHashType, UserInputModelType, UserViewType} from "../types/user-types";
-import {usersQueryRepository} from "../query-repository/users-query-repository";
-import {jwtService} from "../../application/jwt-service";
-
-const bcrypt = require('bcrypt');
+import { UserEmailEntityType,  UserInputModelType} from "../types/user-types";
+import {JwtService} from "../../application/jwt-service";
+import {UsersRepositories} from "../repository/users-repository";
 
 
-export const usersService = {
+export class UsersService {
+    constructor(
+        protected jwtService:JwtService,
+        protected usersRepositories:UsersRepositories,
+                ){}
     async createUser(user: UserInputModelType, isReqFromSuperAdmin: boolean): Promise<ObjectId | false> {
-        const passwordSalt=  await jwtService.generateSalt(10)
-        const passwordHash = await jwtService.generateHash(user.password, passwordSalt)
+        const passwordSalt=  await this.jwtService.generateSalt(10)
+        const passwordHash = await this.jwtService.generateHash(user.password, passwordSalt)
          const  userEmailEntity: UserEmailEntityType  = {
              accountData: {
                  login: user.login,
@@ -26,17 +27,15 @@ export const usersService = {
              isConfirmed: isReqFromSuperAdmin,
              isCreatedFromAdmin: true
          }
-            const userId = await usersRepositories.createUser(userEmailEntity)
+            const userId = await this.usersRepositories.createUser(userEmailEntity)
             if (!userId) {
                 return false
             }
             return userId
-
-    },
+    }
     async deleteUser(id: ObjectId): Promise<boolean> {
-        return await usersRepositories.deleteUser(id)
-
-    },
+        return await this.usersRepositories.deleteUser(id)
+    }
 
 
 

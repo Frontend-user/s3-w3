@@ -9,13 +9,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.securityService = void 0;
-const security_repository_1 = require("../repositories/security-repository");
-exports.securityService = {
+exports.SecurityService = void 0;
+class SecurityService {
+    constructor(securityRepositories) {
+        this.securityRepositories = securityRepositories;
+    }
     createDevice(device) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield security_repository_1.securityRepositories.createDevice(device);
+            return yield this.securityRepositories.createDevice(device);
         });
     }
-};
+}
+exports.SecurityService = SecurityService;
 //# sourceMappingURL=security-service.js.map

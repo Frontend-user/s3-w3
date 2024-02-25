@@ -10,10 +10,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.bearerAuthMiddleware = exports.bearerAndAdminAuthMiddleware = exports.authorizationMiddleware = void 0;
-const jwt_service_1 = require("../application/jwt-service");
-const users_query_repository_1 = require("../users/query-repository/users-query-repository");
 const mongodb_1 = require("mongodb");
 const current_user_1 = require("../application/current-user");
+const composition_root_1 = require("../common/composition-root/composition-root");
 const AUTH_CODE = 'YWRtaW46cXdlcnR5';
 const authorizationMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     let requestAuthCode = req.headers.authorization;
@@ -33,8 +32,8 @@ const bearerAndAdminAuthMiddleware = (req, res, next) => __awaiter(void 0, void 
     }
     let requestAuthCode = req.headers.authorization;
     let token = req.headers.authorization.split(' ')[1];
-    const userId = yield jwt_service_1.jwtService.checkToken(token);
-    const getUserByID = yield users_query_repository_1.usersQueryRepository.getUserById(new mongodb_1.ObjectId(userId));
+    const userId = yield composition_root_1.jwtService.checkToken(token);
+    const getUserByID = yield composition_root_1.usersQueryRepository.getUserById(new mongodb_1.ObjectId(userId));
     if (requestAuthCode && requestAuthCode.slice(6) === AUTH_CODE) {
         next();
         return;
@@ -56,8 +55,8 @@ const bearerAuthMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 
         return;
     }
     let token = req.headers.authorization.split(' ')[1];
-    const userId = yield jwt_service_1.jwtService.checkToken(token);
-    const getUserByID = yield users_query_repository_1.usersQueryRepository.getUserById(new mongodb_1.ObjectId(userId));
+    const userId = yield composition_root_1.jwtService.checkToken(token);
+    const getUserByID = yield composition_root_1.usersQueryRepository.getUserById(new mongodb_1.ObjectId(userId));
     if (!getUserByID || !userId) {
         res.sendStatus(401);
         return;

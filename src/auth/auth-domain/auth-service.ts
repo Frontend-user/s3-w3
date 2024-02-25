@@ -1,21 +1,26 @@
 import {AuthType} from "../auth-types/auth-types";
-import {authRepositories} from "../auth-repository/auth-repository";
 import {UserEmailEntityType, UserInputModelType} from "../../users/types/user-types";
-import {jwtService} from "../../application/jwt-service";
 import {v4 as uuidv4} from 'uuid'
-import {nodemailerService} from "../../application/nodemailer-service";
 import {add} from 'date-fns/add';
-import {usersRepositories} from "../../users/repository/users-repository";
-import {usersService} from "../../users/domain/users-service";
-import {usersQueryRepository} from "../../users/query-repository/users-query-repository";
-import {RecoveryCodeModel, UserModel} from "../../db";
-import {ObjectId} from "mongodb";
+import {AuthRepositories} from "../auth-repository/auth-repository";
+import {JwtService} from "../../application/jwt-service";
+import {UsersRepositories} from "../../users/repository/users-repository";
+import {NodemailerService} from "../../application/nodemailer-service";
 
 const bcrypt = require('bcrypt');
-export const authService = {
+
+export class AuthService {
+    constructor(protected authRepositories: AuthRepositories,
+                protected jwtService: JwtService,
+                protected usersRepositories: UsersRepositories,
+                protected nodemailerService: NodemailerService,
+    ) {
+
+    }
+
     async authUser(authData: AuthType): Promise<boolean> {
-        const isExistLogin = await authRepositories.authUser(authData)
-        const res = await authRepositories.getUserHash(authData)
+        const isExistLogin = await this.authRepositories.authUser(authData)
+        const res = await this.authRepositories.getUserHash(authData)
         if (res && isExistLogin) {
             const passwordSalt = res.passwordSalt
             const passwordHash = res.passwordHash
@@ -24,10 +29,11 @@ export const authService = {
         } else {
             return false
         }
-    },
+    }
+
     async registration(userInputData: UserInputModelType) {
-        const passwordSalt = await jwtService.generateSalt(10)
-        const passwordHash = await jwtService.generateHash(userInputData.password, passwordSalt)
+        const passwordSalt = await this.jwtService.generateSalt(10)
+        const passwordHash = await this.jwtService.generateHash(userInputData.password, passwordSalt)
 
         const userEmailEntity: UserEmailEntityType = {
             accountData: {
@@ -45,35 +51,39 @@ export const authService = {
             isCreatedFromAdmin: false
         }
 
-        const mailSendResponse = await nodemailerService.send(userEmailEntity.emailConfirmation.confirmationCode, userInputData.email)
+        const mailSendResponse = await this.nodemailerService.send(userEmailEntity.emailConfirmation.confirmationCode, userInputData.email)
         if (mailSendResponse) {
-            const userId = await usersRepositories.createUser(userEmailEntity)
+            const userId = await this.usersRepositories.createUser(userEmailEntity)
             return !!userId
         }
         return false
 
-    },
+    }
 
     async registrationConfirm(code: string) {
-        return await authRepositories.getConfirmCode(code)
-    },
+        return await this.authRepositories.getConfirmCode(code)
+    }
+
     async registrationEmailResending(email: string) {
-        return await authRepositories.registrationEmailResending(email)
-    },
+        return await this.authRepositories.registrationEmailResending(email)
+    }
+
     async recoveryCodeEmailSend(email: string) {
-        return await authRepositories.recoveryCodeEmailSend(email)
-    },
+        return await this.authRepositories.recoveryCodeEmailSend(email)
+    }
+
     async createNewPassword(newPassword: any) {
-        const passwordSalt = await jwtService.generateSalt(10)
-        const passwordHash = await jwtService.generateHash(newPassword.newPassword, passwordSalt)
+        const passwordSalt = await this.jwtService.generateSalt(10)
+        const passwordHash = await this.jwtService.generateHash(newPassword.newPassword, passwordSalt)
         let getUserEmail
         try {
-            getUserEmail = await RecoveryCodeModel.findOne({recoveryCode: newPassword.recoveryCode}).lean()
+
+            getUserEmail = await this.authRepositories.getRecoveryCode(newPassword)
         } catch (e) {
             return false
         }
         if (getUserEmail) {
-            await UserModel.updateOne({_id: getUserEmail.userId}, {passwordSalt, passwordHash})
+            await this.usersRepositories.updateUser(getUserEmail, passwordSalt, passwordHash)
             return true
         }
         return false

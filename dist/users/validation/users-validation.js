@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userEmailRecendingExistValidation = exports.checkEmailConfirmation = exports.checkCodeExist = exports.checkCodeConfirmation = exports.userLoginExistValidation = exports.userEmailExistValidation = exports.usersEmailValidation = exports.authLoginOrEmailValidation = exports.usersPasswordValidation = exports.usersLoginValidation = void 0;
 const express_validator_1 = require("express-validator");
-const users_query_repository_1 = require("../query-repository/users-query-repository");
+const composition_root_1 = require("../../common/composition-root/composition-root");
 const usersEmailPattern = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 exports.usersLoginValidation = (0, express_validator_1.body)('login').trim().isString().isLength({ min: 3, max: 10 }).withMessage({
     message: 'login is wrong',
@@ -33,7 +33,7 @@ exports.usersEmailValidation = (0, express_validator_1.body)('email').trim().isS
     field: 'email'
 });
 exports.userEmailExistValidation = (0, express_validator_1.body)('email').custom((value, { req }) => __awaiter(void 0, void 0, void 0, function* () {
-    const isExistEmail = yield users_query_repository_1.usersQueryRepository.getUserByCustomField('accountData.email', value);
+    const isExistEmail = yield composition_root_1.usersQueryRepository.getUserByCustomField('accountData.email', value);
     if (isExistEmail) {
         return true;
     }
@@ -45,7 +45,7 @@ exports.userEmailExistValidation = (0, express_validator_1.body)('email').custom
     field: 'email'
 });
 exports.userLoginExistValidation = (0, express_validator_1.body)('login').custom((value, { req }) => __awaiter(void 0, void 0, void 0, function* () {
-    const isExistEmail = yield users_query_repository_1.usersQueryRepository.getUserByCustomField('accountData.login', value);
+    const isExistEmail = yield composition_root_1.usersQueryRepository.getUserByCustomField('accountData.login', value);
     if (!isExistEmail) {
         return true;
     }
@@ -57,7 +57,7 @@ exports.userLoginExistValidation = (0, express_validator_1.body)('login').custom
     field: 'login'
 });
 exports.checkCodeConfirmation = (0, express_validator_1.body)('code').custom((value, { req }) => __awaiter(void 0, void 0, void 0, function* () {
-    const isExistEmail = yield users_query_repository_1.usersQueryRepository.getUserDataByCustomField('emailConfirmation.confirmationCode', value);
+    const isExistEmail = yield composition_root_1.usersQueryRepository.getUserDataByCustomField('emailConfirmation.confirmationCode', value);
     if (isExistEmail && isExistEmail.isConfirmed) {
         throw new Error('code exist');
     }
@@ -69,7 +69,7 @@ exports.checkCodeConfirmation = (0, express_validator_1.body)('code').custom((va
     field: 'code'
 });
 exports.checkCodeExist = (0, express_validator_1.body)('code').custom((value, { req }) => __awaiter(void 0, void 0, void 0, function* () {
-    const isExistEmail = yield users_query_repository_1.usersQueryRepository.getUserByCustomField('emailConfirmation.confirmationCode', value);
+    const isExistEmail = yield composition_root_1.usersQueryRepository.getUserByCustomField('emailConfirmation.confirmationCode', value);
     if (isExistEmail) {
         return true;
     }
@@ -81,7 +81,7 @@ exports.checkCodeExist = (0, express_validator_1.body)('code').custom((value, { 
     field: 'code'
 });
 exports.checkEmailConfirmation = (0, express_validator_1.body)('email').custom((value, { req }) => __awaiter(void 0, void 0, void 0, function* () {
-    const isExistEmail = yield users_query_repository_1.usersQueryRepository.getUserDataByCustomField('accountData.email', value);
+    const isExistEmail = yield composition_root_1.usersQueryRepository.getUserDataByCustomField('accountData.email', value);
     if (isExistEmail && !isExistEmail.isConfirmed) {
         return true;
     }
@@ -93,7 +93,7 @@ exports.checkEmailConfirmation = (0, express_validator_1.body)('email').custom((
     field: 'email'
 });
 exports.userEmailRecendingExistValidation = (0, express_validator_1.body)('email').custom((value, { req }) => __awaiter(void 0, void 0, void 0, function* () {
-    const isExistEmail = yield users_query_repository_1.usersQueryRepository.getUserByCustomField('accountData.email', value);
+    const isExistEmail = yield composition_root_1.usersQueryRepository.getUserByCustomField('accountData.email', value);
     if (!isExistEmail) {
         throw new Error('email exist');
     }

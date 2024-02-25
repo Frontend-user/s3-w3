@@ -9,9 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.nodemailerService = void 0;
+exports.NodemailerService = void 0;
 const nodemailer = require("nodemailer");
-exports.nodemailerService = {
+class NodemailerService {
     send(confirmationCode, emailToSend) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -40,7 +40,7 @@ exports.nodemailerService = {
                 return false;
             }
         });
-    },
+    }
     sendRecoveryCode(recoveryCode, emailToSend) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -72,5 +72,6 @@ exports.nodemailerService = {
             }
         });
     }
-};
+}
+exports.NodemailerService = NodemailerService;
 //# sourceMappingURL=nodemailer-service.js.map

@@ -1,8 +1,7 @@
-import {NextFunction, Request, Response, ErrorRequestHandler} from "express";
-import {jwtService} from "../application/jwt-service";
-import {usersQueryRepository} from "../users/query-repository/users-query-repository";
+import {NextFunction, Request, Response} from "express";
 import {ObjectId} from "mongodb";
 import {currentUser} from "../application/current-user";
+import {jwtService, usersQueryRepository} from "../common/composition-root/composition-root";
 
 const AUTH_CODE = 'YWRtaW46cXdlcnR5'
 export const authorizationMiddleware = async (req: Request, res: Response, next: NextFunction) => {

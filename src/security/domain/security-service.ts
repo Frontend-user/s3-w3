@@ -1,8 +1,9 @@
 import {ObjectId} from "mongodb";
-import {securityRepositories} from "../repositories/security-repository";
+import {SecurityRepositories} from "../repositories/security-repository";
 
-export const securityService = {
+export class SecurityService  {
+    constructor(protected securityRepositories:SecurityRepositories){}
     async createDevice(device: any): Promise<ObjectId | boolean> {
-        return  await securityRepositories.createDevice(device)
+        return  await this.securityRepositories.createDevice(device)
     }
 }

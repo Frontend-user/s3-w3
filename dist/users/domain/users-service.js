@@ -9,15 +9,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.usersService = void 0;
-const users_repository_1 = require("../repository/users-repository");
-const jwt_service_1 = require("../../application/jwt-service");
-const bcrypt = require('bcrypt');
-exports.usersService = {
+exports.UsersService = void 0;
+class UsersService {
+    constructor(jwtService, usersRepositories) {
+        this.jwtService = jwtService;
+        this.usersRepositories = usersRepositories;
+    }
     createUser(user, isReqFromSuperAdmin) {
         return __awaiter(this, void 0, void 0, function* () {
-            const passwordSalt = yield jwt_service_1.jwtService.generateSalt(10);
-            const passwordHash = yield jwt_service_1.jwtService.generateHash(user.password, passwordSalt);
+            const passwordSalt = yield this.jwtService.generateSalt(10);
+            const passwordHash = yield this.jwtService.generateHash(user.password, passwordSalt);
             const userEmailEntity = {
                 accountData: {
                     login: user.login,
@@ -33,17 +34,18 @@ exports.usersService = {
                 isConfirmed: isReqFromSuperAdmin,
                 isCreatedFromAdmin: true
             };
-            const userId = yield users_repository_1.usersRepositories.createUser(userEmailEntity);
+            const userId = yield this.usersRepositories.createUser(userEmailEntity);
             if (!userId) {
                 return false;
             }
             return userId;
         });
-    },
+    }
     deleteUser(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield users_repository_1.usersRepositories.deleteUser(id);
+            return yield this.usersRepositories.deleteUser(id);
         });
-    },
-};
+    }
+}
+exports.UsersService = UsersService;
 //# sourceMappingURL=users-service.js.map

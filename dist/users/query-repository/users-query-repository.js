@@ -9,10 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.usersQueryRepository = void 0;
+exports.UsersQueryRepository = void 0;
 const blogs_paginate_1 = require("../../blogs/blogs-query/utils/blogs-paginate");
 const db_1 = require("../../db");
-exports.usersQueryRepository = {
+class UsersQueryRepository {
     getUsers(searchLoginTerm, searchEmailTerm, sortBy, sortDirection, pageNumber, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
             const findQuery = this.__getUsersFindings(searchLoginTerm, searchEmailTerm);
@@ -30,13 +30,13 @@ exports.usersQueryRepository = {
                 "items": fixArrayIds
             };
         });
-    },
+    }
     getUserById(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             const getUser = yield db_1.UserModel.findOne({ _id: userId }).lean();
             return getUser ? this.__changeUserFormat(getUser) : false;
         });
-    },
+    }
     getUserByCustomField(fieldName, value) {
         return __awaiter(this, void 0, void 0, function* () {
             let findQuery = {};
@@ -44,7 +44,7 @@ exports.usersQueryRepository = {
             const getUser = yield db_1.UserModel.findOne(findQuery).lean();
             return !!getUser;
         });
-    },
+    }
     getUserDataByCustomField(fieldName, value) {
         return __awaiter(this, void 0, void 0, function* () {
             let findQuery = {};
@@ -52,12 +52,12 @@ exports.usersQueryRepository = {
             const getUser = yield db_1.UserModel.findOne(findQuery).lean();
             return getUser;
         });
-    },
+    }
     __changeUserFormat(obj) {
         obj.id = obj._id.toString();
         delete obj._id;
         return Object.assign({ id: obj.id }, obj.accountData);
-    },
+    }
     __getUsersFindings(searchLoginTerm, searchEmailTerm) {
         let findQuery = {};
         if (searchLoginTerm || searchEmailTerm) {
@@ -69,7 +69,7 @@ exports.usersQueryRepository = {
             };
         }
         return findQuery;
-    },
+    }
     __getUserSorting(sortBy, sortDirection) {
         let sortQuery = { "accountData.createdAt": -1 };
         if (sortBy) {
@@ -81,5 +81,6 @@ exports.usersQueryRepository = {
         }
         return sortQuery;
     }
-};
+}
+exports.UsersQueryRepository = UsersQueryRepository;
 //# sourceMappingURL=users-query-repository.js.map

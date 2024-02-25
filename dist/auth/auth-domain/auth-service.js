@@ -9,20 +9,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authService = void 0;
-const auth_repository_1 = require("../auth-repository/auth-repository");
-const jwt_service_1 = require("../../application/jwt-service");
+exports.AuthService = void 0;
 const uuid_1 = require("uuid");
-const nodemailer_service_1 = require("../../application/nodemailer-service");
 const add_1 = require("date-fns/add");
-const users_repository_1 = require("../../users/repository/users-repository");
-const db_1 = require("../../db");
 const bcrypt = require('bcrypt');
-exports.authService = {
+class AuthService {
+    constructor(authRepositories, jwtService, usersRepositories, nodemailerService) {
+        this.authRepositories = authRepositories;
+        this.jwtService = jwtService;
+        this.usersRepositories = usersRepositories;
+        this.nodemailerService = nodemailerService;
+    }
     authUser(authData) {
         return __awaiter(this, void 0, void 0, function* () {
-            const isExistLogin = yield auth_repository_1.authRepositories.authUser(authData);
-            const res = yield auth_repository_1.authRepositories.getUserHash(authData);
+            const isExistLogin = yield this.authRepositories.authUser(authData);
+            const res = yield this.authRepositories.getUserHash(authData);
             if (res && isExistLogin) {
                 const passwordSalt = res.passwordSalt;
                 const passwordHash = res.passwordHash;
@@ -33,11 +34,11 @@ exports.authService = {
                 return false;
             }
         });
-    },
+    }
     registration(userInputData) {
         return __awaiter(this, void 0, void 0, function* () {
-            const passwordSalt = yield jwt_service_1.jwtService.generateSalt(10);
-            const passwordHash = yield jwt_service_1.jwtService.generateHash(userInputData.password, passwordSalt);
+            const passwordSalt = yield this.jwtService.generateSalt(10);
+            const passwordHash = yield this.jwtService.generateHash(userInputData.password, passwordSalt);
             const userEmailEntity = {
                 accountData: {
                     login: userInputData.login,
@@ -53,46 +54,47 @@ exports.authService = {
                 isConfirmed: false,
                 isCreatedFromAdmin: false
             };
-            const mailSendResponse = yield nodemailer_service_1.nodemailerService.send(userEmailEntity.emailConfirmation.confirmationCode, userInputData.email);
+            const mailSendResponse = yield this.nodemailerService.send(userEmailEntity.emailConfirmation.confirmationCode, userInputData.email);
             if (mailSendResponse) {
-                const userId = yield users_repository_1.usersRepositories.createUser(userEmailEntity);
+                const userId = yield this.usersRepositories.createUser(userEmailEntity);
                 return !!userId;
             }
             return false;
         });
-    },
+    }
     registrationConfirm(code) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield auth_repository_1.authRepositories.getConfirmCode(code);
+            return yield this.authRepositories.getConfirmCode(code);
         });
-    },
+    }
     registrationEmailResending(email) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield auth_repository_1.authRepositories.registrationEmailResending(email);
+            return yield this.authRepositories.registrationEmailResending(email);
         });
-    },
+    }
     recoveryCodeEmailSend(email) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield auth_repository_1.authRepositories.recoveryCodeEmailSend(email);
+            return yield this.authRepositories.recoveryCodeEmailSend(email);
         });
-    },
+    }
     createNewPassword(newPassword) {
         return __awaiter(this, void 0, void 0, function* () {
-            const passwordSalt = yield jwt_service_1.jwtService.generateSalt(10);
-            const passwordHash = yield jwt_service_1.jwtService.generateHash(newPassword.newPassword, passwordSalt);
+            const passwordSalt = yield this.jwtService.generateSalt(10);
+            const passwordHash = yield this.jwtService.generateHash(newPassword.newPassword, passwordSalt);
             let getUserEmail;
             try {
-                getUserEmail = yield db_1.RecoveryCodeModel.findOne({ recoveryCode: newPassword.recoveryCode }).lean();
+                getUserEmail = yield this.authRepositories.getRecoveryCode(newPassword);
             }
             catch (e) {
                 return false;
             }
             if (getUserEmail) {
-                yield db_1.UserModel.updateOne({ _id: getUserEmail.userId }, { passwordSalt, passwordHash });
+                yield this.usersRepositories.updateUser(getUserEmail, passwordSalt, passwordHash);
                 return true;
             }
             return false;
         });
     }
-};
+}
+exports.AuthService = AuthService;
 //# sourceMappingURL=auth-service.js.map

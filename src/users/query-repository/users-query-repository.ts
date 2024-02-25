@@ -4,8 +4,7 @@ import {UserEmailEntityType, UserViewType} from "../types/user-types";
 import {ObjectId, SortDirection} from "mongodb";
 import { TypeQuerySortBlog} from "../../blogs/blogs-query/types/query-types";
 import {Pagination} from "../../common/types/pagination";
-
-export const usersQueryRepository = {
+export class UsersQueryRepository {
     async getUsers(searchLoginTerm?: string, searchEmailTerm?: string, sortBy?: string, sortDirection?: string, pageNumber?: number, pageSize?: number): Promise<Pagination<UserViewType[]>> {
         const findQuery = this.__getUsersFindings(searchLoginTerm, searchEmailTerm)
         const sortQuery = this.__getUserSorting(sortBy, sortDirection)
@@ -22,30 +21,30 @@ export const usersQueryRepository = {
             "totalCount": allUsers.length,
             "items": fixArrayIds
         }
-    },
+    }
     async getUserById(userId: ObjectId): Promise<UserViewType | false> {
         const getUser = await UserModel.findOne({_id: userId}).lean()
         return getUser ? this.__changeUserFormat(getUser) : false
-    },
+    }
     async getUserByCustomField(fieldName: string, value: string): Promise<UserEmailEntityType | boolean> {
         let findQuery: any = {}
         findQuery[`${fieldName}`] = value
         const getUser = await UserModel.findOne(findQuery).lean()
         return !!getUser
-    },
+    }
     async getUserDataByCustomField(fieldName: string, value: string): Promise<UserEmailEntityType | null> {
         let findQuery: any = {}
         findQuery[`${fieldName}`] = value
         const getUser = await UserModel.findOne(findQuery).lean()
         return getUser
-    },
+    }
 
 
     __changeUserFormat(obj: any) {
         obj.id = obj._id.toString()
         delete obj._id
         return {id: obj.id, ...obj.accountData}
-    },
+    }
 
     __getUsersFindings(searchLoginTerm?: string, searchEmailTerm?: string) {
         let findQuery: any = {}
@@ -58,7 +57,7 @@ export const usersQueryRepository = {
             };
         }
         return findQuery
-    },
+    }
     __getUserSorting(sortBy?: string, sortDirection?: SortDirection | string) {
         let sortQuery: TypeQuerySortBlog = {"accountData.createdAt": -1}
         if (sortBy) {
@@ -72,3 +71,4 @@ export const usersQueryRepository = {
     }
 
 }
+

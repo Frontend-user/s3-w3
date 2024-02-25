@@ -14,8 +14,10 @@ const db_1 = require("../../db");
 const blogs_sorting_1 = require("../../blogs/blogs-query/utils/blogs-sorting");
 const blogs_paginate_1 = require("../../blogs/blogs-query/utils/blogs-paginate");
 const http_statuses_1 = require("../../common/constants/http-statuses");
-const jwt_service_1 = require("../../application/jwt-service");
 class CommentQueryRepository {
+    constructor(jwtService) {
+        this.jwtService = jwtService;
+    }
     getCommentsByPostId(postId, sortBy, sortDirection, pageNumber, pageSize, auth) {
         return __awaiter(this, void 0, void 0, function* () {
             const sortQuery = blogs_sorting_1.blogsSorting.getSorting(sortBy, sortDirection);
@@ -23,13 +25,11 @@ class CommentQueryRepository {
             const comments = yield db_1.CommentModel.find({ postId: postId }).sort(sortQuery).skip(skip).limit(limit).lean();
             const allComments = yield db_1.CommentModel.find({ postId: postId }).sort(sortQuery).lean();
             let pagesCount = Math.ceil(allComments.length / newPageSize);
-            // let getRightLikeStatuses =  comments.map((item=> await this.getCommentById(undefined,auth, item)))
             let getRightLikeStatuses = [];
             for (let i = 0; i < comments.length; i++) {
                 let s = yield this.getCommentById(undefined, auth, comments[i]);
                 getRightLikeStatuses.push(s);
             }
-            // const fixArrayIds = getRightLikeStatuses.map((item => this.changeCommentFormat(item)))
             return {
                 "pagesCount": pagesCount,
                 "page": newPageNumber,
@@ -48,10 +48,9 @@ class CommentQueryRepository {
             else {
                 comment = getComment;
             }
-            // comment = await CommentModel.findOne({_id: commentId}).lean()
             let accessUserId;
             if (auth) {
-                accessUserId = yield jwt_service_1.jwtService.checkToken(auth.split(' ')[1]);
+                accessUserId = yield this.jwtService.checkToken(auth.split(' ')[1]);
             }
             if (accessUserId) {
                 let usersLikeStatuses = comment.likesInfo.usersLikeStatuses;
@@ -68,17 +67,6 @@ class CommentQueryRepository {
             else {
                 comment.likesInfo.myStatus = http_statuses_1.LIKE_STATUSES.NONE;
             }
-            // else if(currentUser.userId && comment) {
-            //     let usersLikeStatuses:any[] | undefined = comment!.likesInfo.usersLikeStatuses
-            //     let info
-            //     if(usersLikeStatuses && usersLikeStatuses.length > 0){
-            //         info = usersLikeStatuses.find(o=>o.userId ===currentUser.userId)
-            //         comment!.likesInfo.myStatus = info.likeStatus
-            //     }
-            //     comment!.likesInfo.myStatus = info.likeStatus
-            //
-            // }
-            console.log(comment, '1');
             return comment ? this.changeCommentFormat(comment) : false;
         });
     }

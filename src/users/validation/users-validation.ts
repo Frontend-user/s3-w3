@@ -1,5 +1,5 @@
 import {body} from "express-validator";
-import {usersQueryRepository} from "../query-repository/users-query-repository";
+import {usersQueryRepository} from "../../common/composition-root/composition-root";
 
 const usersEmailPattern =  /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
 export const usersLoginValidation = body('login').trim().isString().isLength({min: 3, max: 10}).withMessage({

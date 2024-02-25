@@ -1,5 +1,4 @@
 import {Request, Response, Router} from "express";
-import {app} from "../app";
 import {client, RecoveryCodeModel} from "../db";
 
 export const testRouter = Router({})

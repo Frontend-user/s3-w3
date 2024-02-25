@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.commentsController = exports.blogsController = exports.postsController = exports.commentsService = exports.commentQueryRepository = exports.commentsRepository = exports.postsService = exports.postsRepositories = exports.blogsService = exports.blogsQueryRepository = exports.blogsRepositories = exports.postsQueryRepository = void 0;
+exports.securityDevicesController = exports.usersController = exports.usersService = exports.authController = exports.authService = exports.securityService = exports.authRepositories = exports.nodemailerService = exports.securityRepositories = exports.querySecurityRepositories = exports.usersRepositories = exports.commentsController = exports.blogsController = exports.postsController = exports.commentsService = exports.commentQueryRepository = exports.jwtService = exports.usersQueryRepository = exports.commentsRepository = exports.postsService = exports.postsRepositories = exports.blogsService = exports.blogsQueryRepository = exports.blogsRepositories = exports.postsQueryRepository = void 0;
 const blogs_repositories_1 = require("../../blogs/repository/blogs-repositories");
 const blogs_service_1 = require("../../blogs/domain/blogs-service");
 const blogs_controller_1 = require("../../blogs/router/blogs-controller");
@@ -13,6 +13,19 @@ const comments_repository_1 = require("../../comments/repository/comments-reposi
 const comment_query_repository_1 = require("../../comments/query-repository/comment-query-repository");
 const comments_service_1 = require("../../comments/service/comments-service");
 const comments_controller_1 = require("../../comments/router/comments-controller");
+const auth_controller_1 = require("../../auth/auth-router/auth-controller");
+const auth_service_1 = require("../../auth/auth-domain/auth-service");
+const users_query_repository_1 = require("../../users/query-repository/users-query-repository");
+const jwt_service_1 = require("../../application/jwt-service");
+const query_security_repository_1 = require("../../security/query-repository/query-security-repository");
+const security_repository_1 = require("../../security/repositories/security-repository");
+const auth_repository_1 = require("../../auth/auth-repository/auth-repository");
+const security_service_1 = require("../../security/domain/security-service");
+const users_repository_1 = require("../../users/repository/users-repository");
+const nodemailer_service_1 = require("../../application/nodemailer-service");
+const users_controller_1 = require("../../users/router/users-controller");
+const users_service_1 = require("../../users/domain/users-service");
+const security_controller_1 = require("../../security/router/security-controller");
 exports.postsQueryRepository = new posts_query_repository_1.PostsQueryRepository();
 exports.blogsRepositories = new blogs_repositories_1.BlogsRepositories();
 exports.blogsQueryRepository = new blogs_query_repository_1.BlogsQueryRepository();
@@ -20,9 +33,23 @@ exports.blogsService = new blogs_service_1.BlogsService(exports.blogsRepositorie
 exports.postsRepositories = new posts_repositories_1.PostsRepositories();
 exports.postsService = new posts_service_1.PostsService(exports.postsRepositories);
 exports.commentsRepository = new comments_repository_1.CommentsRepository();
-exports.commentQueryRepository = new comment_query_repository_1.CommentQueryRepository();
+exports.usersQueryRepository = new users_query_repository_1.UsersQueryRepository();
+exports.jwtService = new jwt_service_1.JwtService(exports.usersQueryRepository);
+exports.commentQueryRepository = new comment_query_repository_1.CommentQueryRepository(exports.jwtService);
 exports.commentsService = new comments_service_1.CommentsService(exports.commentsRepository);
 exports.postsController = new posts_controller_1.PostsController(exports.postsQueryRepository, exports.postsService, exports.blogsQueryRepository, exports.commentsService, exports.commentQueryRepository);
 exports.blogsController = new blogs_controller_1.BlogsControllerConstructor(exports.blogsService, exports.blogsQueryRepository, exports.postsQueryRepository, exports.postsService);
 exports.commentsController = new comments_controller_1.CommentsController(exports.commentsService, exports.commentQueryRepository);
+// constructor(protected authService:AuthService){}
+exports.usersRepositories = new users_repository_1.UsersRepositories();
+exports.querySecurityRepositories = new query_security_repository_1.QuerySecurityRepositories(exports.jwtService);
+exports.securityRepositories = new security_repository_1.SecurityRepositories(exports.jwtService);
+exports.nodemailerService = new nodemailer_service_1.NodemailerService();
+exports.authRepositories = new auth_repository_1.AuthRepositories(exports.nodemailerService);
+exports.securityService = new security_service_1.SecurityService(exports.securityRepositories);
+exports.authService = new auth_service_1.AuthService(exports.authRepositories, exports.jwtService, exports.usersRepositories, exports.nodemailerService);
+exports.authController = new auth_controller_1.AuthController(exports.authService, exports.usersQueryRepository, exports.jwtService, exports.querySecurityRepositories, exports.securityRepositories, exports.authRepositories, exports.securityService);
+exports.usersService = new users_service_1.UsersService(exports.jwtService, exports.usersRepositories);
+exports.usersController = new users_controller_1.UsersController(exports.usersService, exports.usersQueryRepository);
+exports.securityDevicesController = new security_controller_1.SecurityDevicesController(exports.securityRepositories, exports.querySecurityRepositories, exports.jwtService);
 //# sourceMappingURL=composition-root.js.map

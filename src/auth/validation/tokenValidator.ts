@@ -1,9 +1,7 @@
 import {body, cookie, header, validationResult} from "express-validator";
 import {NextFunction, Request, Response} from "express";
 import {ErrorType} from "../../common/types/error-type";
-import {jwtService} from "../../application/jwt-service";
-import {authRepositories} from "../auth-repository/auth-repository";
-import * as dgram from "dgram";
+import {authRepositories, jwtService} from "../../common/composition-root/composition-root";
 
 export const authorizationTokenMiddleware = header('authorization').custom(async (value, {req}) => {
     if (!value) {
@@ -65,99 +63,6 @@ export const tokenValidationMiddleware = (req: Request, res: Response, next: Nex
         next()
     }
 }
-let dates: any[] = []
-let loginDates: any[] = []
-let emailDates: any[] = []
-let confirmDates: any[] = []
-export const authRestrictionValidator = (req: Request, res: Response, next: NextFunction) => {
-    let now = Date.now()
-    if (dates.length >= 5 && (now - dates[0]) < 10000) {
-        dates = []
-
-        res.sendStatus(429)
-        return
-    } else {
-        dates.push(now)
-        next()
-    }
-}
-let requests: any = []
-export const loginRestrictionValidator = async (req: Request, res: Response, next: NextFunction) => {
-    let now = Date.now()
-
-    requests.push({
-        ip:req.ip,
-        time:now
-    })
-    if (loginDates.length >= 5 && (now - loginDates[0].time) < 10000) {
-        loginDates = []
-
-        res.sendStatus(429)
-        return
-    } else {
-        if(loginDates.length >= 5){
-            loginDates = []
-        }
-        loginDates.push({
-            ip:req.ip,
-            time:now
-        })
-
-        next()
-    }
-}
-
-export const emailResendingRestrictionValidator = (req: Request, res: Response, next: NextFunction) => {
-    let now = Date.now()
-
-    if (emailDates.length >= 5 && (now - emailDates[0]) < 10000) {
-        emailDates = []
-
-        res.sendStatus(429)
-        return
-    } else {
-        if(emailDates.length >= 5){
-            emailDates = []
-        }
-        emailDates.push(now)
-        next()
-    }
-}
-
-export const emailConfirmRestrictionValidator = (req: Request, res: Response, next: NextFunction) => {
-    let now = Date.now()
-
-    if (confirmDates.length >= 5 && (now - confirmDates[0]) < 10000) {
-        confirmDates = []
-
-        res.sendStatus(429)
-        return
-    } else {
-        confirmDates.push(now)
-        next()
-    }
-}
-
-let passwordRecoveryDates:any = []
-export const passwordRecoveryRestrictionValidator = (req: Request, res: Response, next: NextFunction) => {
-    let now = Date.now()
-
-    if (passwordRecoveryDates.length >=4 && (now - passwordRecoveryDates.slice(-5)[0]) < 10000) {
-        // passwordRecoveryDates = []
-
-        res.sendStatus(429)
-        return
-    } else {
-        if(passwordRecoveryDates.length >= 5){
-            // passwordRecoveryDates = []
-        }
-        passwordRecoveryDates.push(now)
-        next()
-    }
-}
-let newPasswordRecoveryDates: any = []
-
-
 
 let requestArray:any = {}
 export const customRestrictionValidator = (req: Request, res: Response, next: NextFunction) => {
@@ -176,22 +81,6 @@ export const customRestrictionValidator = (req: Request, res: Response, next: Ne
 }
 
 
-export const newPasswordRecoveryRestrictionValidator = (req: Request, res: Response, next: NextFunction) => {
-    let now = Date.now()
-
-    if (newPasswordRecoveryDates.length >= 5 && (now - newPasswordRecoveryDates[0]) < 10000) {
-        newPasswordRecoveryDates = []
-
-        res.sendStatus(429)
-        return
-    } else {
-        if(newPasswordRecoveryDates.length >= 5){
-            newPasswordRecoveryDates = []
-        }
-        newPasswordRecoveryDates.push(now)
-        next()
-    }
-}
 
 export const recoveryValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req).array({onlyFirstError:true})

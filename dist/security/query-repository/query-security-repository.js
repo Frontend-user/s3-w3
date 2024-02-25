@@ -9,30 +9,33 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.querySecurityRepositories = void 0;
+exports.QuerySecurityRepositories = void 0;
 const change_id_format_1 = require("../../common/custom-methods/change-id-format");
-const jwt_service_1 = require("../../application/jwt-service");
 const db_1 = require("../../db");
-exports.querySecurityRepositories = {
+class QuerySecurityRepositories {
+    constructor(jwtService) {
+        this.jwtService = jwtService;
+    }
     getAllDevices(refreshToken) {
         return __awaiter(this, void 0, void 0, function* () {
-            const tokenData = yield jwt_service_1.jwtService.getRefreshToken(refreshToken);
+            const tokenData = yield this.jwtService.getRefreshToken(refreshToken);
             const response = yield db_1.DeviceModel.find({ userId: tokenData.userId }).lean();
             const devices = response.map((i => (0, change_id_format_1.deleteMongoUserId)(i)));
             return devices ? devices : [];
         });
-    },
+    }
     getDeviceByDeviceId(deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield db_1.DeviceModel.findOne({ deviceId: deviceId }).lean();
             return response ? response : false;
         });
-    },
+    }
     getDeviceByDateAndDeviceId(oldTokenData) {
         return __awaiter(this, void 0, void 0, function* () {
             let device = yield db_1.DeviceModel.findOne({ $and: [{ deviceId: oldTokenData.deviceId }, { lastActiveDate: new Date(oldTokenData.iat).toISOString() }] }).lean();
             return device;
         });
     }
-};
+}
+exports.QuerySecurityRepositories = QuerySecurityRepositories;
 //# sourceMappingURL=query-security-repository.js.map

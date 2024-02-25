@@ -9,17 +9,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.jwtService = void 0;
+exports.JwtService = void 0;
 const bcrypt = require('bcrypt');
 const mongodb_1 = require("mongodb");
-const users_query_repository_1 = require("../users/query-repository/users-query-repository");
 const jwt = require('jsonwebtoken');
-exports.jwtService = {
+class JwtService {
+    constructor(usersQueryRepository) {
+        this.usersQueryRepository = usersQueryRepository;
+    }
     createJWT(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield jwt.sign({ userId: userId }, process.env.JWT_SECRET, { expiresIn: '10m' });
         });
-    },
+    }
     createRefreshToken(userId, newDeviceId) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield jwt.sign({
@@ -27,19 +29,19 @@ exports.jwtService = {
                 deviceId: newDeviceId
             }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '10h' });
         });
-    },
+    }
     checkRefreshToken(token) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const result = yield jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
-                let isFindUser = yield users_query_repository_1.usersQueryRepository.getUserById(new mongodb_1.ObjectId(result.userId));
+                let isFindUser = yield this.usersQueryRepository.getUserById(new mongodb_1.ObjectId(result.userId));
                 return isFindUser ? result.userId : false;
             }
             catch (error) {
                 return;
             }
         });
-    },
+    }
     getRefreshToken(token) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -50,24 +52,24 @@ exports.jwtService = {
                 return;
             }
         });
-    },
+    }
     checkToken(token) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const result = yield jwt.verify(token, process.env.JWT_SECRET);
-                let isFindUser = yield users_query_repository_1.usersQueryRepository.getUserById(new mongodb_1.ObjectId(result.userId));
+                let isFindUser = yield this.usersQueryRepository.getUserById(new mongodb_1.ObjectId(result.userId));
                 return isFindUser ? result.userId : false;
             }
             catch (error) {
                 return;
             }
         });
-    },
+    }
     generateSalt(saltNumber) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield bcrypt.genSalt(saltNumber);
         });
-    },
+    }
     generateHash(password, salt) {
         return __awaiter(this, void 0, void 0, function* () {
             const hash = yield bcrypt.hash(password, salt);
@@ -76,6 +78,7 @@ exports.jwtService = {
             }
             return false;
         });
-    },
-};
+    }
+}
+exports.JwtService = JwtService;
 //# sourceMappingURL=jwt-service.js.map

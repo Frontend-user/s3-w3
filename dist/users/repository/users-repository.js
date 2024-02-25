@@ -9,20 +9,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.usersRepositories = void 0;
+exports.UsersRepositories = void 0;
 const db_1 = require("../../db");
-exports.usersRepositories = {
+class UsersRepositories {
     createUser(user) {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield db_1.UserModel.create(user);
             return response ? response._id : false;
         });
-    },
+    }
     deleteUser(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield db_1.UserModel.deleteOne({ _id: id });
             return !!response.deletedCount;
         });
     }
-};
+    updateUser(getUserEmail, passwordSalt, passwordHash) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let updateUser = yield db_1.UserModel.updateOne({ _id: getUserEmail.userId }, { passwordSalt, passwordHash });
+            return updateUser.matchedCount === 1;
+        });
+    }
+}
+exports.UsersRepositories = UsersRepositories;
 //# sourceMappingURL=users-repository.js.map
