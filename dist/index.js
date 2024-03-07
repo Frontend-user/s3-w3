@@ -11,15 +11,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_1 = require("./db");
 const app_1 = require("./app");
-const PORT = 3000;
+const PORT = 5000;
 app_1.app.set('trust proxy', true);
 app_1.app.get('/', (req, res) => {
     res.send('Hello!');
 });
 const startApp = () => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, db_1.runDb)();
-    app_1.app.listen(PORT, () => {
-        console.log(`START on PORT ${PORT}`);
+    app_1.app.listen(5000, () => {
+        console.log(`START on PORT ${5000}`);
     });
 });
 startApp();

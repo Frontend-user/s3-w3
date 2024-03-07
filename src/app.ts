@@ -1,5 +1,6 @@
 import express from 'express'
 import {testRouter} from "./routes/test-router";
+const cors = require('cors');
 import {usersRouter} from "./users/router/users-router";
 import {postsRouter} from "./posts/router/posts-router";
 import {authRouter} from "./auth/auth-router/auth-router";
@@ -9,6 +10,11 @@ import {securityRouter} from "./security/router/security-router";
 import {blogsRouter} from "./blogs/router/blogs-router";
 export const app = express()
 const jsonBodyMiddleware = express.json()
+app.use(cors({
+    origin: 'http://localhost:8080',
+    methods: 'GET',
+    optionsSuccessStatus: 204,
+}));
 app.use(jsonBodyMiddleware)
 app.use(cookieParser())
 app.use('/blogs',blogsRouter)

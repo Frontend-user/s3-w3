@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.app = void 0;
 const express_1 = __importDefault(require("express"));
 const test_router_1 = require("./routes/test-router");
+const cors = require('cors');
 const users_router_1 = require("./users/router/users-router");
 const posts_router_1 = require("./posts/router/posts-router");
 const auth_router_1 = require("./auth/auth-router/auth-router");
@@ -15,6 +16,11 @@ const security_router_1 = require("./security/router/security-router");
 const blogs_router_1 = require("./blogs/router/blogs-router");
 exports.app = (0, express_1.default)();
 const jsonBodyMiddleware = express_1.default.json();
+exports.app.use(cors({
+    origin: 'http://localhost:8080',
+    methods: 'GET',
+    optionsSuccessStatus: 204,
+}));
 exports.app.use(jsonBodyMiddleware);
 exports.app.use((0, cookie_parser_1.default)());
 exports.app.use('/blogs', blogs_router_1.blogsRouter);
