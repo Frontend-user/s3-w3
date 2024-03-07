@@ -11,7 +11,7 @@ import {blogsRouter} from "./blogs/router/blogs-router";
 export const app = express()
 const jsonBodyMiddleware = express.json()
 app.use(cors({
-    origin: 'http://localhost:8080',
+    origin: '*',
     methods: 'GET',
     optionsSuccessStatus: 204,
 }));

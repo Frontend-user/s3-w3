@@ -17,7 +17,7 @@ const blogs_router_1 = require("./blogs/router/blogs-router");
 exports.app = (0, express_1.default)();
 const jsonBodyMiddleware = express_1.default.json();
 exports.app.use(cors({
-    origin: 'http://localhost:8080',
+    origin: '*',
     methods: 'GET',
     optionsSuccessStatus: 204,
 }));
