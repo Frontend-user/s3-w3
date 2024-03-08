@@ -18,7 +18,7 @@ exports.app = (0, express_1.default)();
 const jsonBodyMiddleware = express_1.default.json();
 exports.app.use(cors({
     origin: '*',
-    methods: 'GET',
+    methods: '*',
     optionsSuccessStatus: 204,
 }));
 exports.app.use(jsonBodyMiddleware);

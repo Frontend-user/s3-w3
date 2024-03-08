@@ -12,7 +12,7 @@ export const app = express()
 const jsonBodyMiddleware = express.json()
 app.use(cors({
     origin: '*',
-    methods: 'GET',
+    methods: '*',
     optionsSuccessStatus: 204,
 }));
 app.use(jsonBodyMiddleware)
